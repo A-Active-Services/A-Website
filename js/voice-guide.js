@@ -148,7 +148,7 @@
       <button class="vg-close" type="button" aria-label="Close">&times;</button>
       <div class="vg-user-line" aria-live="off"></div>
       <div>
-        <p class="vg-agent-line" aria-live="polite">Hi, I'm ${CONFIG.agentName}. Ask me about A+, the team, or how to get started &mdash; for you, or for your team.</p>
+        <p class="vg-agent-line vg-show" aria-live="polite">Hi, I'm ${CONFIG.agentName}. Ask me about A+, the team, or how to get started &mdash; for you, or for your team.</p>
         <div class="vg-waveform" aria-hidden="true">
           <span style="animation-delay:0ms"></span><span style="animation-delay:90ms"></span><span style="animation-delay:180ms"></span>
           <span style="animation-delay:60ms"></span><span style="animation-delay:150ms"></span><span style="animation-delay:30ms"></span>
