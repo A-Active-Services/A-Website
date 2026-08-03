@@ -138,6 +138,7 @@ p { color: var(--text-secondary); }
   border-bottom: 1px solid var(--border);
 }
 .nav-inner {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,6 +157,9 @@ p { color: var(--text-secondary); }
 }
 .nav-logo img { height: 40px; width: auto; }
 .nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 38px;

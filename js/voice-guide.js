@@ -1,5 +1,5 @@
 /**
- * A+ Active Services — "Ace" Guide Orb.
+ * A+ Active Services — "Quinn" Guide Orb.
  * Docked glass-orb launcher (brand blue/red) that opens a voice-first panel
  * wired to a public ElevenLabs Conversational AI agent, with a typed
  * text-only fallback. No canned chat-bubble UI, no chips.
@@ -9,14 +9,14 @@
   "use strict";
 
   const CONFIG = {
-    agentName: "Ace",
+    agentName: "Quinn",
     logoUrl: "assets/logo-icon.png",
     slackUrl:
       "https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g",
     promptClinicUrl: "https://thepromptclinic.com",
     bookingUrl: "https://cal.com/a-activeservces",
     elevenLabsAgentId: "agent_7801kz4eq34qf84sdkqwkzyqr4nn",
-    // TODO: replace with a dedicated Slack Incoming Webhook for Ace email captures
+    // TODO: replace with a dedicated Slack Incoming Webhook for Quinn email captures
     // (kept separate from the Prompt Clinic repo's ops-alert webhook on purpose).
     slackWebhookUrl: "REPLACE_ME_SLACK_WEBHOOK_URL",
   };
@@ -66,46 +66,66 @@
       .g-launcher:active { transform: scale(.9); }
       @media (max-width: 640px) { .g-launcher { width: 56px; height: 56px; right: 18px; bottom: 18px; } }
 
-      .g-orb { position: absolute; inset: 0; border-radius: inherit; }
+      /* Fluid, silk-like living orb: rotating/drifting gradient layers clipped
+         to a clean circular frame (not a spinning rigid disc, and not a flat
+         glass ball, the material inside churns continuously). */
+      .g-orb { position: absolute; inset: 0; overflow: hidden; border-radius: 999px; background: #060c1e; }
+      .g-panel-orb { position: relative; overflow: hidden; border-radius: 999px; background: #060c1e; }
+      .g-orb__base {
+        position: absolute; inset: 0; border-radius: inherit;
+        background: radial-gradient(circle at 50% 50%, #0d1a3d 0%, #060c1e 82%);
+      }
+      .g-orb__swirl {
+        position: absolute; inset: -55%; border-radius: 42%;
+        background: conic-gradient(from 0deg, var(--g-primary), #bcd4ff, var(--g-secondary), #ffb59e, var(--g-primary));
+        filter: blur(3px);
+        mix-blend-mode: screen;
+        opacity: .8;
+        animation: g-swirl-spin 10s linear infinite;
+      }
+      .g-orb__blob {
+        position: absolute; width: 75%; height: 75%; border-radius: 50%;
+        background: radial-gradient(circle, var(--g-secondary), transparent 70%);
+        filter: blur(5px);
+        mix-blend-mode: screen;
+        opacity: .55;
+        animation: g-blob-drift 5.5s ease-in-out infinite;
+      }
       .g-orb__shell {
         position: absolute; inset: 0; border-radius: inherit;
         background:
-          radial-gradient(circle at 31% 23%, rgba(255,255,255,.78) 0 5%, rgba(255,255,255,.16) 12%, transparent 28%),
-          radial-gradient(circle at 50% 58%, rgba(18,31,70,.5) 0 50%, rgba(4,10,28,.82) 76%),
-          conic-gradient(from 210deg, var(--g-secondary), rgba(255,255,255,.8), var(--g-primary), #101c3f, var(--g-secondary));
-        box-shadow:
-          inset 0 0 0 1px rgba(255,255,255,.5),
-          inset 5px 4px 10px rgba(255,255,255,.10),
-          inset -7px -8px 14px rgba(6,10,30,.4);
-      }
-      .g-orb__lens {
-        position: absolute; inset: 24%; border-radius: inherit;
-        background:
-          radial-gradient(circle at 45% 42%, rgba(255,255,255,.6) 0 4%, transparent 14%),
-          radial-gradient(circle at 50% 55%, #cdddff 0 5%, var(--g-primary) 20%, #14265c 56%, rgba(10,14,34,.92) 78%);
-        box-shadow: inset 0 0 0 1px rgba(224,234,255,.5), 0 0 12px rgba(46,124,255,.32);
+          radial-gradient(circle at 30% 24%, rgba(255,255,255,.5) 0 6%, transparent 26%),
+          radial-gradient(circle at 50% 105%, rgba(0,0,0,.55), transparent 55%);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,.4), inset 0 -6px 12px rgba(0,0,0,.32);
       }
       .g-orb__core {
         position: absolute; inset: 43%; border-radius: inherit; background: var(--g-core);
         box-shadow: 0 0 4px #fff, 0 0 10px #9db8ff, 0 0 16px rgba(46,124,255,.7);
-        transition: box-shadow .3s ease;
+        transition: box-shadow .3s ease; z-index: 2;
       }
       .g-orb__highlight {
-        position: absolute; inset: 9% 38% 54% 15%; border-radius: 60% 45% 55% 38%;
-        background: linear-gradient(145deg, rgba(255,255,255,.66), rgba(255,255,255,0));
-        transform: rotate(-18deg);
+        position: absolute; inset: 8% 40% 55% 14%; border-radius: 60% 45% 55% 38%;
+        background: linear-gradient(145deg, rgba(255,255,255,.55), rgba(255,255,255,0));
+        transform: rotate(-18deg); z-index: 2;
+      }
+      @keyframes g-swirl-spin { to { transform: rotate(360deg); } }
+      @keyframes g-blob-drift {
+        0%, 100% { transform: translate(-8%, -6%) scale(1); }
+        50% { transform: translate(12%, 10%) scale(1.18); }
       }
       .g-launcher[data-state="idle"] .g-orb { animation: g-breathe 4.2s ease-in-out infinite; }
+      .g-launcher[data-state="listening"] .g-orb__swirl { animation-duration: 4s; }
       .g-launcher[data-state="listening"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 14px var(--g-secondary), 0 0 22px rgba(255,59,59,.7); }
+      .g-launcher[data-state="speaking"] .g-orb__swirl { animation-duration: 3s; }
       .g-launcher[data-state="speaking"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 16px var(--g-primary), 0 0 26px rgba(46,124,255,.8); }
       .g-launcher[data-state="thinking"] .g-orb { animation: g-pulse-soft 1.4s ease-in-out infinite; }
-      .g-launcher[data-state="connecting"] .g-orb { animation: g-spin-soft 1.8s linear infinite; }
+      .g-launcher[data-state="connecting"] .g-orb__swirl { animation-duration: 1.6s; }
       .g-launcher[data-state="muted"] .g-orb { opacity: .5; }
+      .g-launcher[data-state="muted"] .g-orb__swirl, .g-launcher[data-state="muted"] .g-orb__blob { animation-play-state: paused; }
       @keyframes g-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
       @keyframes g-pulse-soft { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
-      @keyframes g-spin-soft { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) {
-        .g-launcher[data-state] .g-orb { animation: none; }
+        .g-orb__swirl, .g-orb__blob, .g-launcher[data-state] .g-orb { animation: none; }
       }
 
       .g-invite {
@@ -215,14 +235,14 @@
       .g-ring[hidden] { display: none; }
     </style>
 
-    <button class="g-launcher" type="button" data-state="idle" aria-haspopup="dialog" aria-expanded="false" aria-label="Talk to Ace, the A+ Active Services guide">
-      <span class="g-orb"><span class="g-orb__shell"></span><span class="g-orb__lens"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
+    <button class="g-launcher" type="button" data-state="idle" aria-haspopup="dialog" aria-expanded="false" aria-label="Talk to Quinn, the A+ Active Services guide">
+      <span class="g-orb"><span class="g-orb__base"></span><span class="g-orb__swirl"></span><span class="g-orb__blob"></span><span class="g-orb__shell"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
     </button>
     <div class="g-invite" role="status"></div>
 
-    <div class="g-panel" hidden role="dialog" aria-modal="false" aria-label="Ace, the A+ Active Services guide">
+    <div class="g-panel" hidden role="dialog" aria-modal="false" aria-label="Quinn, the A+ Active Services guide">
       <div class="g-panel-head">
-        <span class="g-panel-orb"><span class="g-orb__shell"></span><span class="g-orb__lens"></span><span class="g-orb__core"></span></span>
+        <span class="g-panel-orb"><span class="g-orb__base"></span><span class="g-orb__swirl"></span><span class="g-orb__blob"></span><span class="g-orb__shell"></span><span class="g-orb__core"></span></span>
         <div>
           <div class="g-panel-title">${CONFIG.agentName}</div>
           <div class="g-panel-status" aria-live="polite">Ask your guide</div>
@@ -236,7 +256,7 @@
         <button class="g-start-voice" type="button">
           <span class="g-start-voice-icon">&#127908;</span>
           <span class="g-start-voice-label">Start Voice</span>
-          <span class="g-start-voice-sub">Talk to Ace out loud. Mic access starts only when you tap this.</span>
+          <span class="g-start-voice-sub">Talk to Quinn out loud. Mic access starts only when you tap this.</span>
         </button>
         <div class="g-transcript" hidden></div>
         <div class="g-live-controls">
@@ -244,7 +264,7 @@
           <button class="g-end-btn" type="button" aria-label="End voice session" title="End">&#9209;</button>
         </div>
         <div class="g-inputrow">
-          <input type="text" placeholder="Or type a question…" aria-label="Type a question for Ace">
+          <input type="text" placeholder="Or type a question…" aria-label="Type a question for Quinn">
           <button class="g-send" type="button" aria-label="Send">&#8594;</button>
         </div>
         <div class="g-quicklinks">
@@ -395,7 +415,7 @@
     if (conversation) return conversation;
     const ElevenLabs = window.ElevenLabsClient;
     if (!ElevenLabs) {
-      setStatus("Ace is unavailable right now.");
+      setStatus("Quinn is unavailable right now.");
       return null;
     }
     try {
@@ -415,11 +435,11 @@
         onConnect: () => { textOnlySession = true; setStatus("Ask your guide"); },
         onDisconnect: () => { conversation = null; setStatus("Ask your guide"); },
         onMessage: ({ message, role }) => addMessage(role === "user" ? "user" : "agent", message),
-        onError: () => setStatus("Ace is unavailable right now."),
+        onError: () => setStatus("Quinn is unavailable right now."),
       });
       return conversation;
     } catch (e) {
-      setStatus("Ace is unavailable right now.");
+      setStatus("Quinn is unavailable right now.");
       return null;
     }
   }
@@ -463,17 +483,17 @@
 
   async function submitEmailCapture(email, track) {
     if (!CONFIG.slackWebhookUrl || CONFIG.slackWebhookUrl.startsWith("REPLACE_ME")) {
-      console.warn("[Ace] Slack webhook not configured yet, email captured locally only:", email, track);
+      console.warn("[Quinn] Slack webhook not configured yet, email captured locally only:", email, track);
       return;
     }
     try {
       await fetch(CONFIG.slackWebhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: `New Ace email capture (${track}): ${email}` }),
+        body: JSON.stringify({ text: `New Quinn email capture (${track}): ${email}` }),
       });
     } catch (e) {
-      console.warn("[Ace] Slack webhook post failed", e);
+      console.warn("[Quinn] Slack webhook post failed", e);
     }
   }
 
