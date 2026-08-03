@@ -36,7 +36,7 @@
   --radius-lg: 22px;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   background: var(--bg-page);
@@ -183,7 +183,7 @@ p { color: var(--text-secondary); }
   vertical-align: 2px;
 }
 .nav-cta { display: flex; align-items: center; gap: 20px; }
-.nav-links .btn-accent-red { padding: 8px 18px; font-size: 0.82rem; }
+.nav-cta .btn { padding: 10px 20px; font-size: 0.85rem; white-space: nowrap; }
 .nav-social, .footer-social a {
   display: inline-flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: 100px;
@@ -199,6 +199,15 @@ p { color: var(--text-secondary); }
 
 @media (max-width: 860px) {
   .nav-links { display: none; }
+}
+
+@media (max-width: 480px) {
+  .nav-inner { padding: 14px 16px; }
+  .nav-logo { font-size: 0; gap: 0; }
+  .nav-logo img { height: 32px; }
+  .nav-cta { gap: 8px; }
+  .nav-cta .btn { padding: 8px 12px; font-size: 0.72rem; }
+  .nav-social { display: none; }
 }
 
 /* --- SECTIONS --- */
