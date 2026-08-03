@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — A+ Active Services</title>
+  <meta name="description" content="Answers to the most common questions about A+ Active Services' AI voice agents, workflow automation, pricing, and how it all works.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ---- FAQ PAGE ---- */
+    .faq-section { padding: 80px 0 120px; }
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .faq-sidebar { position: sticky; top: 100px; }
+    .faq-categories { display: flex; flex-direction: column; gap: 4px; }
+    .faq-cat-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      border-left: 2px solid transparent;
+    }
+    .faq-cat-btn:hover { color: var(--text-secondary); background: var(--bg-card); }
+    .faq-cat-btn.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-glow); }
+    .faq-cat-label {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 0 16px;
+      margin: 20px 0 8px;
+    }
+    .faq-cat-label:first-child { margin-top: 0; }
+
+    /* ACCORDION */
+    .faq-group { margin-bottom: 48px; }
+    .faq-group-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item.open { border-color: #F5A62340; }
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--cream);
+      transition: background 0.2s;
+    }
+    .faq-item.open .faq-question { background: #141820; }
+    .faq-question:hover { background: var(--bg-card-hover); }
+    .faq-icon {
+      width: 24px; height: 24px;
+      background: var(--amber-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      color: var(--amber);
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out, padding 0.3s;
+      background: #0D1117;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 600px;
+    }
+    .faq-answer-inner {
+      padding: 0 24px 24px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .faq-answer-inner p { margin-bottom: 12px; }
+    .faq-answer-inner p:last-child { margin-bottom: 0; }
+    .faq-answer-inner strong { color: var(--cream); }
+    .faq-answer-inner .answer-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 12px;
+      background: var(--amber-glow);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--amber-bright);
+      font-weight: 500;
+    }
+
+    @media (max-width: 1024px) {
+      .faq-layout { grid-template-columns: 1fr; }
+      .faq-sidebar { position: static; display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">A<span>+</span> Active</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="sales.html">Services</a></li>
+        <li><a href="case-studies.html">Case Studies</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html" class="active">FAQ</a></li>
+        <li><a href="contact.html" class="nav-cta">Book a Demo</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge">FAQ</div>
+      <h1>Questions we hear <em>all the time.</em></h1>
+      <p>Honest answers. No jargon. If you have a question that isn&rsquo;t here, <a href="contact.html" style="color:var(--amber);">reach out directly</a>.</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="faq-layout">
+
+        <!-- SIDEBAR -->
+        <div class="faq-sidebar fade-up">
+          <div class="faq-cat-label">Categories</div>
+          <div class="faq-categories">
+            <button class="faq-cat-btn active">The Basics</button>
+            <button class="faq-cat-btn">Cost &amp; Pricing</button>
+            <button class="faq-cat-btn">Technology</button>
+            <button class="faq-cat-btn">Getting Started</button>
+            <button class="faq-cat-btn">Results &amp; ROI</button>
+            <button class="faq-cat-btn">After Deployment</button>
+          </div>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="fade-up delay-1">
+
+          <!-- GROUP 1: THE BASICS -->
+          <div class="faq-group" id="basics">
+            <div class="faq-group-title">The Basics</div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                We&rsquo;re not really a tech company. Can this work for us?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>That&rsquo;s exactly who we build for. A+ Active is designed for everyday operators &mdash; dental offices, auto shops, home services companies, salons. You won&rsquo;t touch a line of code. You won&rsquo;t need an IT department. We handle everything from setup to ongoing maintenance.</p>
+                  <p>Our clients use smartphones and maybe a basic CRM. That&rsquo;s all that&rsquo;s required.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                What exactly does an AI voice agent do?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Your AI voice agent answers your business phone in a natural, warm voice &mdash; 24 hours a day, 7 days a week. It&rsquo;s trained on your specific business: your services, your scheduling, your FAQs, your pricing, your voice.</p>
+                  <p>Depending on your setup, it can: book appointments directly into your calendar, answer common questions, capture lead details into your CRM, route urgent calls to the right person, and handle after-hours intake so no call goes unanswered.</p>
+                  <p>Think of it as your best receptionist &mdash; working every shift, never sick, never on vacation.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                How is this different from a regular answering service?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Traditional answering services take messages. They&rsquo;re scripted, robotic, and create a "telephone game" &mdash; the message gets garbled, the callback is late, the lead goes cold.</p>
+                  <p>An A+ Active voice agent <strong>actually does things</strong>. It books appointments in real time. It answers specific questions about YOUR practice. It captures information into your systems. It routes urgent calls immediately. It doesn&rsquo;t just take a message and hope someone follows up.</p>
+                  <p>Also: answering services cost $800&ndash;$2,000/month and still don&rsquo;t feel like your business. Ours does.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                Will callers know they&rsquo;re talking to an AI?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>We always recommend transparency, and we&rsquo;re compliant with all applicable disclosure requirements. However, the quality of modern AI voice agents is significantly better than what most people expect &mdash; natural, warm, responsive, and knowledgeable about your specific business.</p>
+                  <p>Most callers aren&rsquo;t thinking about whether they&rsquo;re talking to a human or an AI &mdash; they&rsquo;re thinking about whether their question got answered and whether their appointment got booked. Our agents do both.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 2: COST -->
+          <div class="faq-group" id="cost">
+            <div class="faq-group-title">Cost &amp; Pricing</div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                AI sounds expensive. How much does this cost?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>A+ Active plans start at $2,000/month. Full systems (voice + workflow + lead nurture) run $5,000/month.</p>
+                  <p>Here&rsquo;s the real question: you&rsquo;re already paying for the problem &mdash; in missed calls, wasted staff hours, and leaked revenue. Our solutions typically pay for themselves in 30&ndash;60 days.</p>
+                  <p>Compare it to what you&rsquo;re currently spending: a receptionist in the NYC metro costs $42K&ndash;$55K/year plus benefits. An answering service runs $10K&ndash;$24K/year and doesn&rsquo;t actually do anything. We replace both at a fraction of the cost and 10x the functionality.</p>
+                  <span class="answer-tag">View full pricing on the <a href="sales.html" style="color:inherit;">Services page</a></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                Are there setup fees or long-term contracts?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>There is a one-time setup and build fee for custom deployments (varies based on complexity). Monthly plans are billed month-to-month after the initial 3-month term.</p>
+                  <p>We ask for a 3-month initial commitment because that&rsquo;s the window where most clients see 3&ndash;10x their investment returned. If after 3 months you haven&rsquo;t seen measurable results, we&rsquo;ll work with you until you do.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                How fast will I see a return on my investment?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Most clients see payback within the first 1&ndash;2 weeks. The math: if you&rsquo;re getting 40 calls per day and missing 25% of them, and your average deal is $300 &mdash; that&rsquo;s $900/day in missed revenue. Our system costs less than 3 days of that loss per month.</p>
+                  <p>By month 3, the typical A+ Active client is generating 3&ndash;10x their monthly investment in recovered revenue and labor savings.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 3: TECHNOLOGY -->
+          <div class="faq-group" id="technology">
+            <div class="faq-group-title">Technology</div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                We tried automation before and it didn&rsquo;t work. What&rsquo;s different?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Most automation fails for one of three reasons: it&rsquo;s generic (not built for your specific workflow), it&rsquo;s fragile (a freelancer built a Zapier setup that breaks when one system updates), or it&rsquo;s abandoned (the vendor hands you software and disappears).</p>
+                  <p>We build around YOUR workflows, YOUR systems, YOUR team. We maintain everything we deploy. If something breaks, that&rsquo;s our problem to fix &mdash; not yours. Clients who had bad experiences before usually had a tool, not a partner. We&rsquo;re the partner.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                What systems and tools do you integrate with?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>We integrate with virtually any system your business already uses: EHR platforms (for healthcare), CRMs (HubSpot, Salesforce, Go High Level), scheduling tools (Calendly, Acuity, practice-specific), email platforms, billing systems, and more.</p>
+                  <p>During our discovery call, we map your current tech stack and build around what you have &mdash; no expensive migrations required. You don&rsquo;t need to change the tools you&rsquo;re used to.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                Is this HIPAA compliant? We&rsquo;re a healthcare practice.
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Yes. Healthcare compliance is built into our architecture from the start. We handle HIPAA requirements for voice call handling, data storage, and transmission as part of every healthcare deployment. We sign Business Associate Agreements (BAAs) with all healthcare clients.</p>
+                  <p>Anthony&rsquo;s background at Cityblock Health means healthcare compliance isn&rsquo;t new territory &mdash; it&rsquo;s where he built his operational expertise.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 4: GETTING STARTED -->
+          <div class="faq-group" id="start">
+            <div class="faq-group-title">Getting Started</div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                How long does it take to go live?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Most deployments go live in 10&ndash;14 days from the discovery call. Complex multi-system integrations may take 3&ndash;4 weeks.</p>
+                  <p>Here&rsquo;s the timeline: Discovery call (Day 1) &rarr; We audit your systems and workflows (Days 2&ndash;4) &rarr; Build and training (Days 5&ndash;11) &rarr; Testing and refinement (Days 12&ndash;13) &rarr; Go live (Day 14).</p>
+                  <p>You don&rsquo;t need to do anything technical. We handle all of it.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                I need to see it work before I commit. Can I?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Absolutely. During your 15-minute demo, I&rsquo;ll call your actual business phone number with a working AI agent. You&rsquo;ll hear exactly what your customers will hear &mdash; live, in real time.</p>
+                  <p>Everything we deploy is production-ready. I don&rsquo;t do demos of hypothetical software &mdash; I show you the real thing. Book a demo and judge for yourself.</p>
+                  <span class="answer-tag"><a href="contact.html" style="color:inherit;">Book a live demo &#8594;</a></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                What do you need from me to get started?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Very little. For the discovery call, you just need to show up and tell us about your business. We&rsquo;ll guide the conversation.</p>
+                  <p>To build your system, we&rsquo;ll need: access to your scheduling system (read-only is fine for the demo), a list of your most common FAQs, information about your services and pricing, and login credentials to any systems we&rsquo;re integrating with.</p>
+                  <p>Total time investment from your side: typically 2&ndash;3 hours across the whole process. We do the heavy lifting.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- GROUP 5: AFTER DEPLOYMENT -->
+          <div class="faq-group" id="after">
+            <div class="faq-group-title">After Deployment</div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                What happens if something breaks?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>We fix it. Period. If your system breaks at 2 AM on a Sunday, that&rsquo;s our problem, not yours. We monitor all deployed systems and are alerted to issues before most clients even notice them.</p>
+                  <p>Maintenance is included in your monthly retainer. You don&rsquo;t get a new invoice every time a system update requires an adjustment. That&rsquo;s part of being a partner, not a vendor.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                Can the AI agent be updated as my business changes?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>Yes &mdash; and this is built into the retainer. When your pricing changes, your services change, or you add a new location, we update your agent. No extra charge for standard updates.</p>
+                  <p>We also review performance metrics monthly and proactively suggest improvements based on call data &mdash; questions the agent is struggling with, patterns in caller behavior, opportunities to improve conversion.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                Can&rsquo;t you just build us a website or landing page?
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="faq-answer-inner">
+                  <p>We&rsquo;re not a marketing agency. We build the operational systems that make your marketing actually convert &mdash; the part that happens after someone raises their hand.</p>
+                  <p>If you need a website, we can refer you to trusted partners in our network who specialize in that. Our focus is what happens when someone calls you, fills out a form, or becomes a lead &mdash; and making sure zero of them fall through the cracks.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box fade-up">
+        <h2>Still have questions?</h2>
+        <p>Book a 15-minute call. No pitch, no pressure &mdash; just a real conversation about whether this makes sense for your business.</p>
+        <a href="contact.html" class="btn-primary"><span class="phone-ring">&#9742;</span> Book a Free Demo</a>
+        <p class="cta-note">Or <a href="contact.html">send a message</a> and I&rsquo;ll respond within a few hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">A<span>+</span> Active</a>
+          <p>AI Voice Agents and Workflow Automation for SMB owners in the Tri-State area. We build AI for everyday people.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="sales.html#voice">AI Voice Agent</a></li>
+            <li><a href="sales.html#workflow">Workflow Automation</a></li>
+            <li><a href="sales.html#leads">Lead Nurture System</a></li>
+            <li><a href="sales.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Anthony</a></li>
+            <li><a href="case-studies.html">Case Studies</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Get Started</h4>
+          <ul>
+            <li><a href="contact.html">Book a Demo</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 A+ Active Services LLC &mdash; Tri-State Area</span>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Accordion
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    // Category buttons (visual only)
+    document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.faq-cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

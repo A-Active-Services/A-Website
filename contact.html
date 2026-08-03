@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Demo — A+ Active Services</title>
+  <meta name="description" content="Book a free 15-minute demo with Anthony Virgo. I'll call your business phone with a live AI agent so you can hear it work in real time.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ---- CONTACT PAGE ---- */
+
+    .contact-section { padding: 80px 0 120px; }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    /* LEFT: WHAT TO EXPECT */
+    .contact-info { display: flex; flex-direction: column; gap: 32px; }
+    .contact-info h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .contact-info h2 em { font-style: normal; color: var(--amber); }
+    .contact-info > p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .what-to-expect { display: flex; flex-direction: column; gap: 20px; }
+    .expect-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .expect-icon {
+      width: 44px; height: 44px;
+      background: var(--amber-glow);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .expect-content h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+    .expect-content p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* TESTIMONIAL */
+    .contact-quote {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--amber);
+      border-radius: 0 12px 12px 0;
+      padding: 24px 28px;
+      position: relative;
+    }
+    .contact-quote p {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .contact-quote cite { font-size: 0.82rem; color: var(--text-muted); font-style: normal; }
+
+    /* QR CODE */
+    .qr-block {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .qr-block img { width: 80px; height: 80px; border-radius: 8px; }
+    .qr-text h4 {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+    .qr-text p { font-size: 0.82rem; color: var(--text-muted); }
+
+    /* RIGHT: FORM */
+    .contact-form-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      position: sticky;
+      top: 100px;
+    }
+    .contact-form-wrapper h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--cream);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .contact-form-wrapper > p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .form-group label .req { color: var(--amber); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235A5F6B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px var(--amber-glow);
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-muted); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-submit {
+      width: 100%;
+      justify-content: center;
+      font-size: 1rem;
+      padding: 16px;
+      margin-top: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .form-privacy {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* SUCCESS STATE */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 32px 0;
+    }
+    .form-success.show { display: block; }
+    .form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+    .form-success h4 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+    .form-success p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; }
+
+    /* TRUST SIGNALS */
+    .trust-section { padding: 0 0 80px; }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      text-align: center;
+    }
+    .trust-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .trust-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .trust-item h4 {
+      font-family: var(--font-display);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+    .trust-item p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+    @media (max-width: 1024px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .contact-form-wrapper { position: static; }
+      .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .contact-form-wrapper { padding: 32px 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      .trust-grid { grid-template-columns: repeat(2, 1fr); }
+      .qr-block { flex-direction: column; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .trust-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb glow-orb-1"></div>
+  <div class="glow-orb glow-orb-2"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">A<span>+</span> Active</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="sales.html">Services</a></li>
+        <li><a href="case-studies.html">Case Studies</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html" class="nav-cta active">Book a Demo</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="container">
+      <div class="page-hero-badge" style="display:inline-flex;align-items:center;gap:8px;"><span style="width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse-dot 2s ease-in-out infinite;"></span>Now booking demos</div>
+      <h1>Let&rsquo;s show you <em>what&rsquo;s possible.</em></h1>
+      <p>15 minutes. I&rsquo;ll call your business phone with a live AI agent so you can hear exactly what your customers will hear. No pitch deck. No slides. Just the real thing.</p>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-layout">
+
+        <!-- LEFT INFO -->
+        <div class="contact-info fade-up">
+          <div>
+            <h2>What happens on the <em>demo call</em></h2>
+            <p style="margin-top:12px;">This isn&rsquo;t a sales call. It&rsquo;s a live demonstration of a working system. Here&rsquo;s exactly what the 15 minutes looks like:</p>
+          </div>
+
+          <div class="what-to-expect">
+            <div class="expect-item">
+              <div class="expect-icon">&#128222;</div>
+              <div class="expect-content">
+                <h4>Live AI agent call to your phone</h4>
+                <p>I&rsquo;ll call your actual business number with a working AI agent. You&rsquo;ll hear the voice, the flow, the booking &mdash; in real time. No demos of hypothetical software.</p>
+              </div>
+            </div>
+            <div class="expect-item">
+              <div class="expect-icon">&#128269;</div>
+              <div class="expect-content">
+                <h4>Quick audit of your situation</h4>
+                <p>I&rsquo;ll ask a few questions about your call volume, current setup, and where you feel the most pain. This isn&rsquo;t a discovery session for me &mdash; it&rsquo;s to make sure I show you the most relevant thing.</p>
+              </div>
+            </div>
+            <div class="expect-item">
+              <div class="expect-icon">&#128200;</div>
+              <div class="expect-content">
+                <h4>Your real ROI numbers</h4>
+                <p>Based on your call volume and deal size, I&rsquo;ll tell you exactly what the math looks like for your business. If it doesn&rsquo;t pencil out, I&rsquo;ll tell you that too.</p>
+              </div>
+            </div>
+            <div class="expect-item">
+              <div class="expect-icon">&#128204;</div>
+              <div class="expect-content">
+                <h4>A clear next step (or not)</h4>
+                <p>No hard close. Either this makes sense for your business right now and we talk about how to move forward, or it doesn&rsquo;t and we part on good terms. I&rsquo;d rather be honest than push a bad fit.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-quote">
+            <p>"I finally feel like I&rsquo;m running a business instead of babysitting a process."</p>
+            <cite>Home Services Owner, NJ &mdash; A+ Active client since 2026</cite>
+          </div>
+
+          <div class="qr-block">
+            <img id="bookDemoQr" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="QR code: open this booking page on your phone" width="80" height="80" decoding="async" referrerpolicy="no-referrer">
+            <div class="qr-text">
+              <h4>Prefer to scan?</h4>
+              <p>Scan the QR code to access the booking page directly on your phone.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="contact-form-wrapper fade-up delay-2">
+          <h3>Book Your Free Demo</h3>
+          <p>Fill this out and I&rsquo;ll reach out within 2 hours to confirm your time. Most demos happen within 24&ndash;48 hours.</p>
+
+          <form id="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First name <span class="req">*</span></label>
+                <input type="text" id="firstName" placeholder="Anthony" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last name <span class="req">*</span></label>
+                <input type="text" id="lastName" placeholder="Virgo" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Business email <span class="req">*</span></label>
+              <input type="email" id="email" placeholder="you@yourbusiness.com" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Business phone <span class="req">*</span></label>
+              <input type="tel" id="phone" placeholder="(555) 000-0000" required>
+            </div>
+            <div class="form-group">
+              <label for="business">Business name</label>
+              <input type="text" id="business" placeholder="Your Business Name">
+            </div>
+            <div class="form-group">
+              <label for="industry">Industry <span class="req">*</span></label>
+              <select id="industry" required>
+                <option value="" disabled selected>Select your industry</option>
+                <option>Medical / Dental Practice</option>
+                <option>Home Services (HVAC, Plumbing, Electrical)</option>
+                <option>Auto Shop / Dealership</option>
+                <option>Salon / Spa / Beauty</option>
+                <option>Fitness Studio / Gym</option>
+                <option>Legal / Accounting / Professional Services</option>
+                <option>Restaurant / Hospitality</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="calls">Approx. calls per day</label>
+              <select id="calls">
+                <option value="" disabled selected>Select range</option>
+                <option>Under 15</option>
+                <option>15–30</option>
+                <option>30–60</option>
+                <option>60–100</option>
+                <option>100+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Biggest operational headache (optional)</label>
+              <textarea id="message" placeholder="Missed calls after hours, staff overwhelmed with admin, leads not getting followed up..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary form-submit"><span class="phone-ring">&#9742;</span> Book My Free Demo</button>
+            <p class="form-privacy">No spam. No commitment. I respond personally within 2 hours during business hours. Your information is never shared.</p>
+          </form>
+
+          <div class="form-success" id="formSuccess">
+            <div class="success-icon">&#127881;</div>
+            <h4>You&rsquo;re booked!</h4>
+            <p>I&rsquo;ll reach out within 2 hours to confirm your demo time. Check your email for a confirmation. I&rsquo;m looking forward to showing you what&rsquo;s possible.</p>
+            <p style="margin-top:16px; font-size:0.85rem; color:var(--text-muted);">&mdash; Anthony Virgo, CEO</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST SIGNALS -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item fade-up">
+          <div class="trust-icon">&#9989;</div>
+          <h4>No Setup Fees to Start</h4>
+          <p>Discuss options during the demo before committing to anything</p>
+        </div>
+        <div class="trust-item fade-up delay-1">
+          <div class="trust-icon">&#128274;</div>
+          <h4>HIPAA Compliant</h4>
+          <p>Healthcare practices welcome. Compliance is built in, not bolted on</p>
+        </div>
+        <div class="trust-item fade-up delay-2">
+          <div class="trust-icon">&#128205;</div>
+          <h4>Tri-State Based</h4>
+          <p>NYC, NJ &amp; CT. In-person demos and meetings available</p>
+        </div>
+        <div class="trust-item fade-up delay-3">
+          <div class="trust-icon">&#9889;</div>
+          <h4>Live in 14 Days</h4>
+          <p>From signed agreement to production-ready deployment. Most clients see payback in week 2</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">A<span>+</span> Active</a>
+          <p>AI Voice Agents and Workflow Automation for SMB owners in the Tri-State area. We build AI for everyday people.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="sales.html#voice">AI Voice Agent</a></li>
+            <li><a href="sales.html#workflow">Workflow Automation</a></li>
+            <li><a href="sales.html#leads">Lead Nurture System</a></li>
+            <li><a href="sales.html">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About Anthony</a></li>
+            <li><a href="case-studies.html">Case Studies</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Get Started</h4>
+          <ul>
+            <li><a href="contact.html">Book a Demo</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 A+ Active Services LLC &mdash; Tri-State Area</span>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+    document.getElementById('mobileToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // QR encodes this page’s URL so a phone scan lands on the same booking form (replace with a static asset later if you prefer).
+    (function () {
+      const el = document.getElementById('bookDemoQr');
+      if (!el) return;
+      const pageUrl = window.location.href.replace(/#.*$/, '');
+      el.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&format=png&data=' + encodeURIComponent(pageUrl);
+    })();
+
+    // Form submit
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('formSuccess').classList.add('show');
+      // In production: send form data to backend / Airtable / HubSpot / etc.
+    });
+  </script>
+</body>
+</html>

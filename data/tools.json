@@ -1,0 +1,13 @@
+[
+  { "name": "Claude Code", "icon": "assets/logos/anthropic.svg" },
+  { "name": "OpenAI", "icon": null },
+  { "name": "Google Gemini", "icon": "assets/logos/googlegemini.svg" },
+  { "name": "Make.com", "icon": "assets/logos/make.svg" },
+  { "name": "ElevenLabs", "icon": "assets/logos/elevenlabs.svg" },
+  { "name": "Figma", "icon": "assets/logos/figma.svg" },
+  { "name": "Vapi", "icon": null },
+  { "name": "Cursor", "icon": "assets/logos/cursor.svg" },
+  { "name": "Copilot", "icon": "assets/logos/githubcopilot.svg" },
+  { "name": "Perplexity", "icon": null },
+  { "name": "Midjourney", "icon": null }
+]

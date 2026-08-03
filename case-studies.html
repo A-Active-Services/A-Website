@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies | A+ Active Services</title>
+  <meta name="description" content="Real A+ Active Services engagements across healthcare and growing businesses, dental, mental health, and solo-entrepreneur AI systems.">
+  <link rel="icon" href="assets/logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .cs-hero { padding: 150px 0 40px; }
+    .cs-hero .section-head { max-width: 680px; }
+
+    .case-card {
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 40px; margin-bottom: 26px;
+    }
+    .case-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+    .case-tag {
+      display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent-blue); background: rgba(46,124,255,0.12); border: 1px solid rgba(46,124,255,0.3);
+      border-radius: 100px; padding: 5px 12px; margin-bottom: 14px;
+    }
+    .case-card h3 { font-size: clamp(1.3rem, 2.2vw, 1.7rem); margin-bottom: 10px; }
+    .case-card > p.case-intro { font-size: 0.98rem; max-width: 640px; margin-bottom: 24px; }
+    .case-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 800px) { .case-breakdown { grid-template-columns: 1fr; } }
+    .case-col h5 { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    .case-col p { font-size: 0.9rem; margin: 0; }
+
+    /* TESTIMONIALS */
+    .testimonial-wrap { max-width: 720px; margin: 0 auto; text-align: center; min-height: 200px; }
+    .testimonial-quote { font-family: var(--font-display); font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 700; color: var(--white); line-height: 1.4; opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s ease; }
+    .testimonial-quote.show { opacity: 1; transform: translateY(0); }
+    .testimonial-quote::before { content: '\201C'; color: var(--accent-blue); }
+    .testimonial-quote::after { content: '\201D'; color: var(--accent-blue); }
+    .testimonial-meta { margin-top: 20px; opacity: 0; transition: opacity 0.4s ease; }
+    .testimonial-meta.show { opacity: 1; }
+    .testimonial-name { font-weight: 700; color: var(--white); }
+    .testimonial-role { font-size: 0.85rem; color: var(--text-muted); }
+    .testimonial-source { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .testimonial-dots { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
+    .testimonial-dots button { width: 8px; height: 8px; border-radius: 50%; border: none; background: var(--border-strong); cursor: pointer; padding: 0; }
+    .testimonial-dots button.active { background: var(--accent-blue); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html#home" class="nav-logo">
+        <img src="assets/logo-icon.png" alt="A+ Active Services logo">
+        A+ Active Services
+      </a>
+      <div class="nav-links">
+        <a href="index.html#healthcare">Healthcare</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#story">Our Story</a>
+        <a href="ai-for-everyday-people.html">AI For Everyday People <span class="nav-soon">Coming Soon</span></a>
+      </div>
+      <div class="nav-cta">
+        <a href="prompt-clinic.html" class="btn btn-accent-red">The Prompt Clinic</a>
+        <a href="https://www.linkedin.com/company/a-active-services/?viewAsMember=true" target="_blank" rel="noopener" class="nav-social" aria-label="A+ Active Services on LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM7.12 20.45H3.56V9h3.56v11.45zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13z"/></svg>
+        </a>
+        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-primary">Join The Community</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="cs-hero">
+    <div class="grid-glow"></div>
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Case Studies</span>
+        <h1 style="font-size:clamp(2.2rem,4vw,3.4rem);">Real engagements, <span class="pop">real outcomes.</span></h1>
+        <p>A look at how A+ approaches healthcare, private practice, and solo-founder engagements. Details are generalized to protect client privacy.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="section-tight">
+    <div class="container">
+
+      <div class="case-card reveal">
+        <div class="case-card-top">
+          <div>
+            <span class="case-tag">Healthcare &middot; Dental</span>
+            <h3>Turning one dentist into a content system, without adding a content team.</h3>
+          </div>
+        </div>
+        <p class="case-intro">A multi-location dental practice wanted to educate patients and build trust online, but the dentist had no time to film, write, or post. We built an AI avatar system trained on her voice and expertise so she could produce a steady stream of patient-education video content without ever picking up a camera.</p>
+        <div class="case-breakdown">
+          <div class="case-col">
+            <h5>The Challenge</h5>
+            <p>Zero bandwidth for content, but real demand for patient trust and visibility.</p>
+          </div>
+          <div class="case-col">
+            <h5>What We Built</h5>
+            <p>A trained AI avatar and repeatable video pipeline, from script to finished post.</p>
+          </div>
+          <div class="case-col">
+            <h5>The Result</h5>
+            <p>A consistent content presence the practice never had to staff for.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-card-top">
+          <div>
+            <span class="case-tag">Healthcare &middot; Mental Health</span>
+            <h3>HIPAA-aware booking for a solo therapy practice, done right the first time.</h3>
+          </div>
+        </div>
+        <p class="case-intro">A solo mental health private practice needed online booking that actually met HIPAA expectations, not a generic scheduling widget bolted onto a website. We built a compliant booking and intake flow, paired with AI-assisted follow-up so nothing slipped through the cracks between sessions.</p>
+        <div class="case-breakdown">
+          <div class="case-col">
+            <h5>The Challenge</h5>
+            <p>Needed real booking and payments without compromising patient privacy.</p>
+          </div>
+          <div class="case-col">
+            <h5>What We Built</h5>
+            <p>A HIPAA-aware booking flow with AI-assisted intake and reminders.</p>
+          </div>
+          <div class="case-col">
+            <h5>The Result</h5>
+            <p>A fully booked calendar and zero manual scheduling back-and-forth.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="case-card reveal">
+        <div class="case-card-top">
+          <div>
+            <span class="case-tag">Growing Business &middot; Solo Founder</span>
+            <h3>AI 101 for a founder who'd never touched these tools before.</h3>
+          </div>
+        </div>
+        <p class="case-intro">A growing solo-entrepreneur brand wanted to use AI in her day-to-day work but didn't know where to start. Rather than hand her software and walk away, we built out a hands-on onboarding path and lightweight content systems so she could actually learn the tools, not just have them running in the background.</p>
+        <div class="case-breakdown">
+          <div class="case-col">
+            <h5>The Challenge</h5>
+            <p>Wanted to use AI, not just have it done for her.</p>
+          </div>
+          <div class="case-col">
+            <h5>What We Built</h5>
+            <p>Guided AI 101 onboarding plus a simple content system she runs herself.</p>
+          </div>
+          <div class="case-col">
+            <h5>The Result</h5>
+            <p>A founder who's now confident enough to use AI without us in the room. This one's still early, more to come.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section>
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">What People Are Saying</span>
+        <h2>Straight from <span class="pop">LinkedIn.</span></h2>
+      </div>
+      <div class="testimonial-wrap">
+        <p class="testimonial-quote" id="testimonialQuote"></p>
+        <div class="testimonial-meta" id="testimonialMeta">
+          <div class="testimonial-name" id="testimonialName"></div>
+          <div class="testimonial-role" id="testimonialRole"></div>
+          <div class="testimonial-source" id="testimonialSource"></div>
+        </div>
+        <div class="testimonial-dots" id="testimonialDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="community-band community-band-compact" id="community">
+    <div class="container">
+      <span class="eyebrow" style="justify-content:center;">Want Results Like These?</span>
+      <h2>Let's talk about your business.</h2>
+      <div class="hero-cta" style="justify-content:center;margin-top:24px;">
+        <a href="booking.html" class="btn btn-primary">Book A Consult</a>
+        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-secondary">Join The Slack Community</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo">
+            <img src="assets/logo-icon.png" alt="A+ Active Services logo">
+            A+ Active Services
+          </div>
+          <p class="footer-tagline">AI for everyday people. Real solutions for healthcare teams and growing businesses.</p>
+          <div class="footer-social footer-social-lg">
+            <a href="https://www.linkedin.com/company/a-active-services/?viewAsMember=true" target="_blank" rel="noopener" aria-label="A+ Active Services on LinkedIn">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM7.12 20.45H3.56V9h3.56v11.45zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="index.html#team">Leadership</a>
+            <a href="index.html#story">Our Story</a>
+            <a href="case-studies.html">Case Studies</a>
+          </div>
+          <div class="footer-col">
+            <h4>Get Started</h4>
+            <a href="ai-for-everyday-people.html">AI For Everyday People</a>
+            <a href="prompt-clinic.html">The Prompt Clinic</a>
+            <a href="faq.html">FAQ</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 A+ Active Services LLC. AI For Everyday People.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/voice-guide.js" defer></script>
+  <script>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
+
+    fetch("data/testimonials.json")
+      .then((r) => r.json())
+      .then((items) => {
+        if (!items.length) return;
+        const quoteEl = document.getElementById("testimonialQuote");
+        const metaEl = document.getElementById("testimonialMeta");
+        const nameEl = document.getElementById("testimonialName");
+        const roleEl = document.getElementById("testimonialRole");
+        const sourceEl = document.getElementById("testimonialSource");
+        const dotsEl = document.getElementById("testimonialDots");
+        let active = 0;
+
+        items.forEach((_, i) => {
+          const dot = document.createElement("button");
+          dot.setAttribute("aria-label", "Show testimonial " + (i + 1));
+          if (i === 0) dot.classList.add("active");
+          dot.addEventListener("click", () => show(i));
+          dotsEl.appendChild(dot);
+        });
+
+        function show(i) {
+          active = i;
+          quoteEl.classList.remove("show");
+          metaEl.classList.remove("show");
+          setTimeout(() => {
+            const item = items[active];
+            quoteEl.textContent = item.quote;
+            nameEl.textContent = item.name;
+            roleEl.textContent = item.role;
+            sourceEl.textContent = item.source;
+            quoteEl.classList.add("show");
+            metaEl.classList.add("show");
+            [...dotsEl.children].forEach((d, di) => d.classList.toggle("active", di === active));
+          }, 200);
+        }
+        show(0);
+        setInterval(() => show((active + 1) % items.length), 6000);
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>
