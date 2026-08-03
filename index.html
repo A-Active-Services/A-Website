@@ -36,6 +36,15 @@
     @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     /* WHO WE HELP */
+    .who-we-help-head { display: grid; grid-template-columns: 1.3fr 0.9fr; gap: 48px; align-items: end; margin-bottom: 36px; }
+    .who-we-help-side { padding-bottom: 4px; }
+    .who-we-help-side > p { font-size: 1rem; margin-bottom: 22px; }
+    .who-we-help-side-list { display: flex; gap: 28px; }
+    .who-we-help-side-list > div { border-left: 2px solid var(--accent-blue); padding-left: 14px; }
+    .who-we-help-side-list strong { display: block; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; color: var(--white); line-height: 1; }
+    .who-we-help-side-list span { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; }
+    @media (max-width: 900px) { .who-we-help-head { grid-template-columns: 1fr; align-items: start; } }
+
     .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
     .problem-grid-amber { margin-top: 26px; }
     @media (max-width: 900px) { .problem-grid { grid-template-columns: 1fr; } }
@@ -58,6 +67,23 @@
     .prompt-clinic-band-text p { font-size: 0.94rem; max-width: 560px; margin: 0; }
     .prompt-clinic-band .btn { flex-shrink: 0; }
     @media (max-width: 780px) { .prompt-clinic-band { flex-direction: column; align-items: flex-start; } }
+
+    .growth-cta-band {
+      margin: 40px 0 0;
+      padding: 36px 42px;
+      display: flex; align-items: center; justify-content: space-between; gap: 32px;
+      background: linear-gradient(120deg, rgba(245,166,35,0.09), rgba(245,166,35,0.02));
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: var(--radius-lg);
+    }
+    .growth-cta-band .btn { flex-shrink: 0; }
+    @media (max-width: 780px) { .growth-cta-band { flex-direction: column; align-items: flex-start; } }
+    .btn-growth-amber {
+      background: linear-gradient(120deg, var(--accent-amber), var(--accent-amber-deep));
+      color: var(--white);
+      box-shadow: 0 10px 24px -10px rgba(245,166,35,0.5);
+    }
+    .btn-growth-amber:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(245,166,35,0.65); }
 
     /* SERVICES */
     .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -206,13 +232,6 @@
         <a href="#story">Our Story</a>
         <a href="ai-for-everyday-people.html">AI For Everyday People <span class="nav-soon">Coming Soon</span></a>
       </div>
-      <div class="nav-cta">
-        <a href="https://thepromptclinic.com" class="btn btn-accent-red">The Prompt Clinic</a>
-        <a href="https://www.linkedin.com/company/a-active-services/?viewAsMember=true" target="_blank" rel="noopener" class="nav-social" aria-label="A+ Active Services on LinkedIn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM7.12 20.45H3.56V9h3.56v11.45zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13z"/></svg>
-        </a>
-        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-primary">Join The Community</a>
-      </div>
     </div>
   </nav>
 
@@ -227,6 +246,7 @@
       <div class="hero-cta">
         <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-primary">Join The Community</a>
         <a href="#story" class="btn btn-secondary">Our Story</a>
+        <a href="https://thepromptclinic.com" class="btn btn-accent-red">The Prompt Clinic</a>
       </div>
     </div>
   </header>
@@ -283,9 +303,18 @@
   <!-- WHO WE HELP -->
   <section>
     <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">Who We Help</span>
-        <h2>Digital health solutions for talented people buried in administrative work. Time freedom, location freedom, financial freedom.</h2>
+      <div class="who-we-help-head reveal">
+        <div class="section-head" style="margin-bottom:0;">
+          <span class="eyebrow">Who We Help</span>
+          <h2>Digital health solutions for talented people buried in administrative work. Time freedom, location freedom, financial freedom.</h2>
+        </div>
+        <div class="who-we-help-side">
+          <p>We see it across healthcare, small business, and community organizations: skilled people spending their time on repetitive tasks instead of the work that actually matters.</p>
+          <div class="who-we-help-side-list">
+            <div><strong>6</strong><span>Types of clients we serve</span></div>
+            <div><strong>1st</strong><span>Healthcare, where we started</span></div>
+          </div>
+        </div>
       </div>
       <div class="problem-grid">
         <div class="problem-item reveal">
@@ -312,29 +341,6 @@
           <p>The Prompt Clinic is where our backend AI training and community live: real workshops, real prompts, real feedback. Sign in to start learning.</p>
         </div>
         <a href="https://thepromptclinic.com" class="btn btn-accent-red">Enter The Prompt Clinic</a>
-      </div>
-
-      <div class="problem-grid problem-grid-amber">
-        <div class="problem-item reveal">
-          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-          <h4>Growing Businesses</h4>
-          <p>Owners and operators who need every call answered and every workflow running without hiring a full department.</p>
-        </div>
-        <div class="problem-item reveal">
-          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-          <h4>Entrepreneurs</h4>
-          <p>Founders building something new who need the right AI tools and systems in place from day one, not bolted on later.</p>
-        </div>
-        <div class="problem-item reveal">
-          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <h4>Community Organizations</h4>
-          <p>Teams that want to adopt AI responsibly, with real training and support, not just software.</p>
-        </div>
-      </div>
-
-      <div class="hero-cta" style="justify-content:center;margin-top:36px;">
-        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-primary">Join The Community</a>
-        <a href="ai-for-everyday-people.html" class="btn btn-secondary">AI For Everyday People</a>
       </div>
     </div>
   </section>
@@ -379,6 +385,69 @@
     </div>
   </section>
 
+  <!-- WHO WE HELP (continued) -->
+  <section class="section-tight">
+    <div class="container">
+      <div class="problem-grid problem-grid-amber">
+        <div class="problem-item reveal">
+          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <h4>Growing Businesses</h4>
+          <p>Owners and operators who need every call answered and every workflow running without hiring a full department.</p>
+        </div>
+        <div class="problem-item reveal">
+          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <h4>Entrepreneurs</h4>
+          <p>Founders building something new who need the right AI tools and systems in place from day one, not bolted on later.</p>
+        </div>
+        <div class="problem-item reveal">
+          <div class="icon-mark icon-mark-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h4>Community Organizations</h4>
+          <p>Teams that want to adopt AI responsibly, with real training and support, not just software.</p>
+        </div>
+      </div>
+
+      <div class="growth-cta-band reveal">
+        <div class="prompt-clinic-band-text">
+          <span class="eyebrow" style="color:var(--accent-amber);">For Growing Teams</span>
+          <h3>Every missed call and manual workflow is time you don't get back.</h3>
+          <p>Whether you're running a growing business, building something new, or leading a community org, we'll show you exactly where AI actually helps, and where it doesn't.</p>
+        </div>
+        <a href="https://cal.com/a-activeservces" target="_blank" rel="noopener" class="btn btn-growth-amber">Book A Consult</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR STORY + TEAM -->
+  <section id="story">
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Our Story</span>
+        <h2>AI For Everyday People</h2>
+      </div>
+      <div class="story-layout">
+        <div class="story-photo story-logo-card story-logo-animated">
+          <div class="story-logo-orbit story-logo-orbit-1"></div>
+          <div class="story-logo-orbit story-logo-orbit-2"></div>
+          <div class="story-logo-particles" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <img class="story-logo-img" src="assets/logo-icon.png" alt="A+ Active Services logo">
+          <button type="button" class="story-cta" data-ace-story-trigger>
+            <span class="story-cta-dot" aria-hidden="true"></span>
+            Here's our story
+          </button>
+        </div>
+        <div class="story-body">
+          <p>A+ Active Services was built on a simple observation: talented, dedicated professionals were buried in administrative work instead of doing what they do best, helping people.</p>
+          <p>Across healthcare, small business, and community organizations, we saw the same pattern over and over. Paperwork instead of patients. Data entry instead of decisions. Repetition instead of relationships.</p>
+          <p>Artificial intelligence became the bridge. Not to replace people, but to give them their time back.</p>
+          <p>That belief is the whole company, distilled into one sentence: AI for everyday people.</p>
+        </div>
+      </div>
+      <p class="belief-line">AI with a <span class="pop">human touch.</span></p>
+    </div>
+  </section>
+
   <!-- SERVICES -->
   <section id="services" class="section-tight">
     <div class="container">
@@ -418,37 +487,6 @@
           <p>Education built into every engagement.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- OUR STORY + TEAM -->
-  <section id="story">
-    <div class="container">
-      <div class="section-head center reveal">
-        <span class="eyebrow">Our Story</span>
-        <h2>AI For Everyday People</h2>
-      </div>
-      <div class="story-layout">
-        <div class="story-photo story-logo-card story-logo-animated">
-          <div class="story-logo-orbit story-logo-orbit-1"></div>
-          <div class="story-logo-orbit story-logo-orbit-2"></div>
-          <div class="story-logo-particles" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span>
-          </div>
-          <img class="story-logo-img" src="assets/logo-icon.png" alt="A+ Active Services logo">
-          <button type="button" class="story-cta" data-ace-story-trigger>
-            <span class="story-cta-dot" aria-hidden="true"></span>
-            Here's our story
-          </button>
-        </div>
-        <div class="story-body">
-          <p>A+ Active Services was built on a simple observation: talented, dedicated professionals were buried in administrative work instead of doing what they do best, helping people.</p>
-          <p>Across healthcare, small business, and community organizations, we saw the same pattern over and over. Paperwork instead of patients. Data entry instead of decisions. Repetition instead of relationships.</p>
-          <p>Artificial intelligence became the bridge. Not to replace people, but to give them their time back.</p>
-          <p>That belief is the whole company, distilled into one sentence: AI for everyday people.</p>
-        </div>
-      </div>
-      <p class="belief-line">AI with a <span class="pop">human touch.</span></p>
     </div>
   </section>
 
@@ -500,6 +538,7 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/@elevenlabs/client@1.17.0/dist/lib.iife.js" defer></script>
   <script src="js/voice-guide.js" defer></script>
   <script>
     const revealObserver = new IntersectionObserver((entries) => {

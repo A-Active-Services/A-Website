@@ -1,619 +1,493 @@
 /**
- * A+ Active Services — Ace, the ambient site guide.
- * The orb itself is the launcher (no separate boxed chat button/header).
- * Glass caption bubble instead of a chat-app panel. CSS-only motion,
- * Shadow DOM isolated, keyboard accessible, respects prefers-reduced-motion,
- * no autoplay audio/mic without direct action.
- * No live LLM backend yet: canned, triage-focused knowledge base + speechSynthesis.
+ * A+ Active Services — "Ace" Guide Orb.
+ * Docked glass-orb launcher (brand blue/red) that opens a voice-first panel
+ * wired to a public ElevenLabs Conversational AI agent, with a typed
+ * text-only fallback. No canned chat-bubble UI, no chips.
+ * Built per CLAUDE-VOICE-GUIDE-WIDGET-BUILD.md.
  */
 (function () {
   "use strict";
 
   const CONFIG = {
-    companyName: "A+ Active Services",
     agentName: "Ace",
     logoUrl: "assets/logo-icon.png",
     slackUrl:
       "https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g",
-    promptClinicUrl: "prompt-clinic.html",
-    // TODO: replace with a real Slack Incoming Webhook URL to receive email captures from Ace.
+    promptClinicUrl: "https://thepromptclinic.com",
+    bookingUrl: "https://cal.com/a-activeservces",
+    elevenLabsAgentId: "agent_7801kz4eq34qf84sdkqwkzyqr4nn",
+    // TODO: replace with a dedicated Slack Incoming Webhook for Ace email captures
+    // (kept separate from the Prompt Clinic repo's ops-alert webhook on purpose).
     slackWebhookUrl: "REPLACE_ME_SLACK_WEBHOOK_URL",
   };
 
+  const GUIDE_TARGETS = {
+    services: "#services",
+    healthcare: "#healthcare",
+    story: "#story",
+    community: "#community",
+    team: "#team",
+  };
+
   const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const enableCursor = matchMedia("(pointer: fine)").matches && !prefersReduced;
+  const isMobile = matchMedia("(max-width: 640px)").matches;
 
   const host = document.createElement("div");
-  host.id = "aplus-voice-guide-host";
+  host.id = "aplus-guide-host";
   host.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:2147483000;";
   document.body.appendChild(host);
   const root = host.attachShadow({ mode: "open" });
 
   root.innerHTML = `
     <style>
-      :host { --vg-primary:#2E7CFF; --vg-secondary:#FF3B3B; --vg-purple:#8B5CF6; --vg-cyan:#6EE7F9; --vg-dark:#0D1830; --vg-border:rgba(255,255,255,.16); }
-      * { box-sizing:border-box; font-family:'Inter',system-ui,sans-serif; }
+      :host {
+        --g-primary: #2E7CFF;
+        --g-secondary: #FF3B3B;
+        --g-core: #F8F7FF;
+        --g-panel: rgba(8, 14, 30, 0.94);
+        --g-border: rgba(180, 205, 255, 0.22);
+        --g-text: #F5F7FB;
+        --g-muted: #AAB5CA;
+      }
+      * { box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
 
-      /* ---- The orb is the launcher. Always alive, always clickable. ---- */
-      .vg-orb {
-        position:fixed; top:0; left:0; width:40px; height:40px; border-radius:50%;
-        pointer-events:auto; cursor:pointer; z-index:2147483001;
+      /* ---- Docked launcher orb (52px desktop / 56px mobile). No cursor-follow mode. ---- */
+      .g-launcher {
+        position: fixed; right: 22px; bottom: 22px; z-index: 2147483001;
+        width: 52px; height: 52px; border-radius: 999px; padding: 0; border: none;
+        cursor: pointer; pointer-events: auto; isolation: isolate;
+        transform: translateZ(0);
+        filter:
+          drop-shadow(0 7px 14px rgba(0,8,28,.38))
+          drop-shadow(0 0 14px rgba(46,124,255,.22));
+        transition: transform .18s ease, width .2s ease, height .2s ease;
+      }
+      .g-launcher:hover, .g-launcher:focus-visible { transform: scale(1.08); }
+      .g-launcher:active { transform: scale(.9); }
+      @media (max-width: 640px) { .g-launcher { width: 56px; height: 56px; right: 18px; bottom: 18px; } }
+
+      .g-orb { position: absolute; inset: 0; border-radius: inherit; }
+      .g-orb__shell {
+        position: absolute; inset: 0; border-radius: inherit;
         background:
-          radial-gradient(circle at 30% 24%, rgba(255,255,255,.95) 0%, rgba(255,255,255,.2) 11%, transparent 26%),
-          radial-gradient(circle at 50% 58%, var(--vg-purple) 0%, rgba(139,92,246,.55) 34%, rgba(9,14,28,.94) 74%);
+          radial-gradient(circle at 31% 23%, rgba(255,255,255,.78) 0 5%, rgba(255,255,255,.16) 12%, transparent 28%),
+          radial-gradient(circle at 50% 58%, rgba(18,31,70,.5) 0 50%, rgba(4,10,28,.82) 76%),
+          conic-gradient(from 210deg, var(--g-secondary), rgba(255,255,255,.8), var(--g-primary), #101c3f, var(--g-secondary));
         box-shadow:
-          inset 0 0 10px rgba(255,255,255,.3),
-          inset 0 -8px 14px rgba(0,0,0,.4),
-          0 0 22px rgba(139,92,246,.65), 0 0 36px rgba(46,124,255,.3);
-        border: 1px solid rgba(255,255,255,.45);
-        transition: width .2s ease, height .2s ease, box-shadow .2s ease, opacity .3s ease;
-        will-change: transform;
-        animation: vg-breathe 4s ease-in-out infinite;
+          inset 0 0 0 1px rgba(255,255,255,.5),
+          inset 5px 4px 10px rgba(255,255,255,.10),
+          inset -7px -8px 14px rgba(6,10,30,.4);
       }
-      .vg-orb.hover, .vg-orb:hover { width:46px; height:46px; box-shadow: inset 0 0 12px rgba(255,255,255,.35), inset 0 -8px 14px rgba(0,0,0,.4), 0 0 30px rgba(139,92,246,.8), 0 0 44px rgba(46,124,255,.4); }
-      .vg-orb.down { width:32px; height:32px; }
-      .vg-orb.docked { animation: vg-breathe 4s ease-in-out infinite; }
-      .vg-orb[data-state="listening"] { box-shadow: inset 0 0 10px rgba(255,255,255,.3), 0 0 30px rgba(255,59,59,.7), 0 0 46px rgba(255,59,59,.35); }
-      .vg-orb[data-state="speaking"] { box-shadow: inset 0 0 10px rgba(255,255,255,.3), 0 0 30px rgba(46,124,255,.75), 0 0 46px rgba(46,124,255,.4); }
-      @keyframes vg-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+      .g-orb__lens {
+        position: absolute; inset: 24%; border-radius: inherit;
+        background:
+          radial-gradient(circle at 45% 42%, rgba(255,255,255,.6) 0 4%, transparent 14%),
+          radial-gradient(circle at 50% 55%, #cdddff 0 5%, var(--g-primary) 20%, #14265c 56%, rgba(10,14,34,.92) 78%);
+        box-shadow: inset 0 0 0 1px rgba(224,234,255,.5), 0 0 12px rgba(46,124,255,.32);
+      }
+      .g-orb__core {
+        position: absolute; inset: 43%; border-radius: inherit; background: var(--g-core);
+        box-shadow: 0 0 4px #fff, 0 0 10px #9db8ff, 0 0 16px rgba(46,124,255,.7);
+        transition: box-shadow .3s ease;
+      }
+      .g-orb__highlight {
+        position: absolute; inset: 9% 38% 54% 15%; border-radius: 60% 45% 55% 38%;
+        background: linear-gradient(145deg, rgba(255,255,255,.66), rgba(255,255,255,0));
+        transform: rotate(-18deg);
+      }
+      .g-launcher[data-state="idle"] .g-orb { animation: g-breathe 4.2s ease-in-out infinite; }
+      .g-launcher[data-state="listening"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 14px var(--g-secondary), 0 0 22px rgba(255,59,59,.7); }
+      .g-launcher[data-state="speaking"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 16px var(--g-primary), 0 0 26px rgba(46,124,255,.8); }
+      .g-launcher[data-state="thinking"] .g-orb { animation: g-pulse-soft 1.4s ease-in-out infinite; }
+      .g-launcher[data-state="connecting"] .g-orb { animation: g-spin-soft 1.8s linear infinite; }
+      .g-launcher[data-state="muted"] .g-orb { opacity: .5; }
+      @keyframes g-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+      @keyframes g-pulse-soft { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
+      @keyframes g-spin-soft { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .g-launcher[data-state] .g-orb { animation: none; }
+      }
 
-      .vg-invite {
-        position:fixed; pointer-events:none;
-        background:var(--vg-dark); border:1px solid var(--vg-border); color:#F5F7FB;
-        padding:7px 14px; border-radius:100px; font-size:.8rem; font-weight:600;
-        opacity:0; transform:translateY(6px); transition:opacity .3s ease, transform .3s ease;
-        box-shadow:0 10px 24px -8px rgba(0,0,0,.5); white-space:nowrap;
+      .g-invite {
+        position: fixed; right: 22px; bottom: 84px; z-index: 2147483001; pointer-events: none;
+        background: var(--g-panel); border: 1px solid var(--g-border); color: var(--g-text);
+        padding: 8px 16px; border-radius: 100px; font-size: .82rem; font-weight: 600;
+        opacity: 0; transform: translateY(6px); transition: opacity .3s ease, transform .3s ease;
+        box-shadow: 0 10px 24px -8px rgba(0,0,0,.5); white-space: nowrap;
       }
-      .vg-invite.show { opacity:1; transform:translateY(0); }
+      .g-invite.show { opacity: 1; transform: translateY(0); }
 
-      /* ---- Frameless glass caption bubble. No app header, no bordered transcript. ---- */
-      .vg-bubble {
-        position:fixed; right:22px; bottom:96px; width:336px; max-width:calc(100vw - 32px);
-        display:flex; flex-direction:column; gap:12px;
-        background:rgba(13,24,48,.86); backdrop-filter:blur(20px);
-        border:1px solid var(--vg-border); border-radius:20px; padding:20px 20px 16px;
-        box-shadow:0 30px 70px -24px rgba(0,0,0,.65); pointer-events:auto;
-        opacity:0; transform:translateY(10px) scale(.98); transition:opacity .25s ease, transform .25s ease;
+      /* ---- Panel ---- */
+      .g-panel {
+        position: fixed; right: 22px; bottom: 88px; z-index: 2147483001;
+        width: 340px; max-width: calc(100vw - 32px);
+        max-height: min(620px, calc(100vh - 40px));
+        display: flex; flex-direction: column;
+        background: var(--g-panel); backdrop-filter: blur(14px);
+        border: 1px solid var(--g-border); border-radius: 26px;
+        box-shadow: 0 30px 70px -24px rgba(0,0,0,.65);
+        pointer-events: auto; opacity: 0; transform: translateY(12px) scale(.98);
+        transition: opacity .22s ease, transform .22s ease;
       }
-      .vg-bubble.vg-open { opacity:1; transform:translateY(0) scale(1); }
-      .vg-bubble[hidden] { display:none; }
+      .g-panel.g-open { opacity: 1; transform: translateY(0) scale(1); }
+      .g-panel[hidden] { display: none; }
+      @media (max-width: 640px) {
+        .g-panel {
+          right: 0; left: 0; bottom: 0; width: 100%; max-width: 100%;
+          border-radius: 24px 24px 0 0; max-height: min(78vh, 620px);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
 
-      .vg-close {
-        position:absolute; top:12px; right:12px; width:24px; height:24px; border-radius:50%;
-        border:1px solid var(--vg-border); background:rgba(255,255,255,.04); color:#B4BDCC;
-        cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.85rem; line-height:1;
+      .g-panel-head { display: flex; align-items: center; gap: 12px; padding: 18px 18px 10px; }
+      .g-panel-orb { width: 40px; height: 40px; border-radius: 999px; position: relative; flex-shrink: 0; }
+      .g-panel-title { font-weight: 700; color: var(--g-text); font-size: .95rem; }
+      .g-panel-status { font-size: .78rem; color: var(--g-muted); margin-top: 1px; }
+      .g-panel-controls { margin-left: auto; display: flex; gap: 6px; }
+      .g-icon-btn {
+        width: 30px; height: 30px; min-width: 44px; min-height: 44px; margin: -7px;
+        border-radius: 50%; border: 1px solid var(--g-border); background: transparent;
+        color: var(--g-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+        font-size: .95rem;
       }
-      .vg-close:hover { color:#fff; border-color:var(--vg-primary); }
-      .vg-voice-toggle {
-        position:absolute; top:12px; right:44px; width:24px; height:24px; border-radius:50%;
-        border:1px solid var(--vg-border); background:rgba(255,255,255,.04); color:#B4BDCC;
-        cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.8rem;
-      }
-      .vg-voice-toggle:hover { color:#fff; border-color:var(--vg-primary); }
+      .g-icon-btn:hover, .g-icon-btn:focus-visible { color: #fff; border-color: var(--g-primary); }
+      @media (max-width: 640px) { .g-icon-btn { width: 44px; height: 44px; margin: 0; } }
 
-      .vg-user-line { font-size:.74rem; color:#7C879B; font-style:italic; padding-right:56px; min-height:1em; }
-      .vg-agent-line {
-        font-size:.98rem; line-height:1.55; color:#F5F7FB; padding-right:16px;
-        opacity:0; transform:translateY(4px); transition:opacity .3s ease, transform .3s ease;
-      }
-      .vg-agent-line.vg-show { opacity:1; transform:translateY(0); }
-      .vg-waveform { display:none; align-items:flex-end; gap:2px; height:14px; margin-top:2px; }
-      .vg-waveform.active { display:flex; }
-      .vg-waveform span { width:3px; border-radius:2px; background:linear-gradient(180deg, var(--vg-cyan), var(--vg-purple)); animation: vg-wave .9s ease-in-out infinite; }
-      @keyframes vg-wave { 0%,100% { transform:scaleY(.35); } 50% { transform:scaleY(1); } }
+      .g-panel-body { padding: 4px 18px 18px; overflow-y: auto; flex: 1; min-height: 0; }
 
-      .vg-chips { display:flex; flex-wrap:wrap; gap:6px; }
-      .vg-chip {
-        font-size:.76rem; font-weight:600; color:#B4BDCC; background:rgba(255,255,255,.05);
-        border:1px solid var(--vg-border); border-radius:100px; padding:7px 12px; cursor:pointer;
+      .g-start-voice {
+        width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px;
+        padding: 22px 16px; border-radius: 18px; border: 1px solid var(--g-border);
+        background: rgba(46,124,255,.08); cursor: pointer; margin-bottom: 14px;
       }
-      .vg-chip:hover { color:#fff; border-color:var(--vg-primary); }
-      .vg-chip.vg-chip-accent { color:#fff; background:rgba(255,59,59,.14); border-color:rgba(255,59,59,.4); }
+      .g-start-voice:hover, .g-start-voice:focus-visible { border-color: var(--g-primary); background: rgba(46,124,255,.14); }
+      .g-start-voice-icon {
+        width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, var(--g-primary), #1a4fc9); color: #fff; font-size: 1.3rem;
+      }
+      .g-start-voice-label { font-weight: 700; color: var(--g-text); font-size: .92rem; }
+      .g-start-voice-sub { font-size: .76rem; color: var(--g-muted); text-align: center; }
 
-      .vg-inputrow { display:flex; gap:8px; padding-top:6px; border-top:1px solid var(--vg-border); margin-top:2px; }
-      .vg-inputrow input {
-        flex:1; min-width:0; background:rgba(255,255,255,.05); border:1px solid var(--vg-border); border-radius:100px;
-        padding:9px 14px; color:#F5F7FB; font-size:.85rem; outline:none; margin-top:8px;
-      }
-      .vg-inputrow input:focus { border-color:var(--vg-primary); }
-      .vg-inputrow button {
-        width:36px; height:36px; margin-top:8px; border-radius:50%; border:1px solid var(--vg-border); background:transparent;
-        color:#B4BDCC; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;
-      }
-      .vg-inputrow button:hover { color:#fff; border-color:var(--vg-primary); }
-      .vg-inputrow .vg-send { background:var(--vg-primary); border-color:var(--vg-primary); color:#fff; }
-      .vg-mic[data-active="true"] { color:var(--vg-secondary); border-color:var(--vg-secondary); }
-      .vg-mic:disabled { opacity:.4; cursor:not-allowed; }
+      .g-transcript { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 220px; overflow-y: auto; }
+      .g-transcript[hidden] { display: none; }
+      .g-msg { max-width: 88%; padding: 8px 12px; border-radius: 12px; font-size: .85rem; line-height: 1.45; }
+      .g-msg-agent { align-self: flex-start; background: rgba(255,255,255,.06); color: var(--g-text); }
+      .g-msg-user { align-self: flex-end; background: var(--g-primary); color: #fff; }
 
-      .vg-foot { font-size:.66rem; color:#5b6577; line-height:1.4; }
-
-      .vg-ring {
-        position:fixed; border:2px solid var(--vg-primary); border-radius:14px; pointer-events:none;
-        box-shadow:0 0 0 4px rgba(46,124,255,.18), 0 0 30px rgba(46,124,255,.4);
-        z-index:2147482999; transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
+      .g-live-controls { display: none; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+      .g-live-controls.show { display: flex; }
+      .g-live-controls button {
+        width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--g-border);
+        background: rgba(255,255,255,.04); color: var(--g-muted); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; font-size: 1rem;
       }
-      .vg-ring[hidden] { display:none; }
+      .g-live-controls button:hover { color: #fff; }
+      .g-live-controls .g-end-btn { color: var(--g-secondary); border-color: rgba(255,59,59,.4); }
+      .g-live-controls .g-mute-btn[data-muted="true"] { color: var(--g-secondary); border-color: rgba(255,59,59,.4); }
 
-      @media (max-width: 480px) {
-        .vg-bubble { right:12px; left:12px; width:auto; bottom:78px; }
-        .vg-orb { right:16px; bottom:16px; }
+      .g-inputrow { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--g-border); }
+      .g-inputrow input {
+        flex: 1; min-width: 0; background: rgba(255,255,255,.05); border: 1px solid var(--g-border);
+        border-radius: 100px; padding: 10px 16px; color: var(--g-text); font-size: .85rem; outline: none;
       }
+      .g-inputrow input:focus { border-color: var(--g-primary); }
+      .g-inputrow button {
+        width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--g-border); background: var(--g-primary);
+        color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      }
+
+      .g-quicklinks { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .g-quicklinks a {
+        flex: 1; min-width: 100px; text-align: center; font-size: .76rem; font-weight: 700;
+        padding: 9px 10px; border-radius: 100px; border: 1px solid var(--g-border); color: var(--g-text);
+        background: rgba(255,255,255,.03); text-decoration: none;
+      }
+      .g-quicklinks a:hover { border-color: var(--g-primary); color: #fff; }
+      .g-quicklinks a.g-link-accent { background: rgba(255,59,59,.12); border-color: rgba(255,59,59,.35); }
+
+      .g-foot { font-size: .66rem; color: #5b6577; line-height: 1.4; margin-top: 12px; }
+
+      .g-ring {
+        position: fixed; border: 2px solid var(--g-primary); border-radius: 14px; pointer-events: none;
+        box-shadow: 0 0 0 4px rgba(46,124,255,.18), 0 0 30px rgba(46,124,255,.4);
+        z-index: 2147482999; transition: top .3s ease, left .3s ease, width .3s ease, height .3s ease;
+      }
+      .g-ring[hidden] { display: none; }
     </style>
 
-    <div class="vg-orb" role="button" tabindex="0" aria-label="Talk to Ace, the A+ Active Services guide" aria-expanded="false" data-state="idle"></div>
-    <div class="vg-invite" role="status"></div>
+    <button class="g-launcher" type="button" data-state="idle" aria-haspopup="dialog" aria-expanded="false" aria-label="Talk to Ace, the A+ Active Services guide">
+      <span class="g-orb"><span class="g-orb__shell"></span><span class="g-orb__lens"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
+    </button>
+    <div class="g-invite" role="status"></div>
 
-    <div class="vg-bubble" hidden role="dialog" aria-label="Ace, the A+ Active Services guide">
-      <button class="vg-voice-toggle" type="button" aria-pressed="true" aria-label="Toggle spoken replies" title="Toggle spoken replies">&#128266;</button>
-      <button class="vg-close" type="button" aria-label="Close">&times;</button>
-      <div class="vg-user-line" aria-live="off"></div>
-      <div>
-        <p class="vg-agent-line vg-show" aria-live="polite">Hi, I'm ${CONFIG.agentName}. Ask me about A+, the team, or how to get started &mdash; for you, or for your team.</p>
-        <div class="vg-waveform" aria-hidden="true">
-          <span style="animation-delay:0ms"></span><span style="animation-delay:90ms"></span><span style="animation-delay:180ms"></span>
-          <span style="animation-delay:60ms"></span><span style="animation-delay:150ms"></span><span style="animation-delay:30ms"></span>
-          <span style="animation-delay:120ms"></span>
+    <div class="g-panel" hidden role="dialog" aria-modal="false" aria-label="Ace, the A+ Active Services guide">
+      <div class="g-panel-head">
+        <span class="g-panel-orb"><span class="g-orb__shell"></span><span class="g-orb__lens"></span><span class="g-orb__core"></span></span>
+        <div>
+          <div class="g-panel-title">${CONFIG.agentName}</div>
+          <div class="g-panel-status" aria-live="polite">Ask your guide</div>
+        </div>
+        <div class="g-panel-controls">
+          <button class="g-icon-btn g-minimize" type="button" aria-label="Minimize">&#8722;</button>
+          <button class="g-icon-btn g-close" type="button" aria-label="Close">&times;</button>
         </div>
       </div>
-      <div class="vg-chips">
-        <button class="vg-chip" data-q="What does A+ do?">What does A+ do?</button>
-        <button class="vg-chip" data-q="I'm exploring AI for myself">Just for me</button>
-        <button class="vg-chip" data-q="I'm looking for my team or organization">For my team</button>
-        <button class="vg-chip" data-q="How do I book a consult?">Book a consult</button>
+      <div class="g-panel-body">
+        <button class="g-start-voice" type="button">
+          <span class="g-start-voice-icon">&#127908;</span>
+          <span class="g-start-voice-label">Start Voice</span>
+          <span class="g-start-voice-sub">Talk to Ace out loud. Mic access starts only when you tap this.</span>
+        </button>
+        <div class="g-transcript" hidden></div>
+        <div class="g-live-controls">
+          <button class="g-mute-btn" type="button" data-muted="false" aria-label="Mute microphone" title="Mute">&#127908;</button>
+          <button class="g-end-btn" type="button" aria-label="End voice session" title="End">&#9209;</button>
+        </div>
+        <div class="g-inputrow">
+          <input type="text" placeholder="Or type a question…" aria-label="Type a question for Ace">
+          <button class="g-send" type="button" aria-label="Send">&#8594;</button>
+        </div>
+        <div class="g-quicklinks">
+          <a href="${CONFIG.slackUrl}" target="_blank" rel="noopener">Join Slack</a>
+          <a href="${CONFIG.promptClinicUrl}" target="_blank" rel="noopener" class="g-link-accent">Prompt Clinic</a>
+          <a href="${CONFIG.bookingUrl}" target="_blank" rel="noopener">Book a Consult</a>
+        </div>
+        <p class="g-foot">Voice is never required, you can type instead. Nothing is recorded beyond this session. ${CONFIG.agentName} only knows about A+, not a general AI.</p>
       </div>
-      <div class="vg-inputrow">
-        <button class="vg-mic" type="button" aria-label="Ask by voice" title="Ask by voice">&#127908;</button>
-        <input type="text" placeholder="Ask a question…" aria-label="Ask Ace a question">
-        <button class="vg-send" type="button" aria-label="Send">&#8594;</button>
-      </div>
-      <p class="vg-foot">Nothing is recorded or stored. Mic access starts only when you tap it. ${CONFIG.agentName} only knows about A+, not a general AI yet.</p>
     </div>
-    <div class="vg-ring" hidden></div>
+    <div class="g-ring" hidden></div>
   `;
 
-  const orb = root.querySelector(".vg-orb");
-  const invite = root.querySelector(".vg-invite");
-  const bubble = root.querySelector(".vg-bubble");
-  const closeBtn = root.querySelector(".vg-close");
-  const voiceToggle = root.querySelector(".vg-voice-toggle");
-  const userLine = root.querySelector(".vg-user-line");
-  const agentLine = root.querySelector(".vg-agent-line");
-  const chipsRow = root.querySelector(".vg-chips");
-  const input = root.querySelector(".vg-inputrow input");
-  const sendBtn = root.querySelector(".vg-send");
-  const micBtn = root.querySelector(".vg-mic");
-  const ring = root.querySelector(".vg-ring");
-  const waveform = root.querySelector(".vg-waveform");
+  const launcher = root.querySelector(".g-launcher");
+  const invite = root.querySelector(".g-invite");
+  const panel = root.querySelector(".g-panel");
+  const panelStatus = root.querySelector(".g-panel-status");
+  const closeBtn = root.querySelector(".g-close");
+  const minimizeBtn = root.querySelector(".g-minimize");
+  const startVoiceBtn = root.querySelector(".g-start-voice");
+  const transcript = root.querySelector(".g-transcript");
+  const liveControls = root.querySelector(".g-live-controls");
+  const muteBtn = root.querySelector(".g-mute-btn");
+  const endBtn = root.querySelector(".g-end-btn");
+  const input = root.querySelector(".g-inputrow input");
+  const sendBtn = root.querySelector(".g-send");
+  const ring = root.querySelector(".g-ring");
 
-  let docked = !enableCursor;
-  let bubbleOpen = false;
-  let voiceOn = true;
-  let visitorTrack = null; // "self" | "team"
+  let panelOpen = false;
+  let conversation = null;
+  let textOnlySession = false;
 
-  function setState(s) {
-    orb.dataset.state = s;
-    waveform.classList.toggle("active", s === "listening");
+  function setLauncherState(s) {
+    launcher.dataset.state = s;
+  }
+  function setStatus(text) {
+    panelStatus.textContent = text;
   }
 
-  // ---- Orb motion: glides with the cursor until the bubble opens, then docks bottom-right ----
-  if (enableCursor) {
-    let mouseX = innerWidth - 60,
-      mouseY = innerHeight - 60,
-      orbX = mouseX,
-      orbY = mouseY,
-      lastMove = Date.now();
-
-    document.addEventListener("mousemove", (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      lastMove = Date.now();
-    });
-    document.addEventListener("mouseover", (e) => {
-      if (docked) return;
-      const t = e.target.closest && e.target.closest("a,button,input,textarea,[role='button'],.btn");
-      orb.classList.toggle("hover", !!t);
-    });
-    (function raf() {
-      if (!docked) {
-        orbX += (mouseX - orbX) * 0.16;
-        orbY += (mouseY - orbY) * 0.16;
-        orb.style.transform = "translate3d(" + (orbX - 20) + "px," + (orbY - 20) + "px,0)";
-      }
-      requestAnimationFrame(raf);
-    })();
-    setInterval(() => {
-      if (!docked && !bubbleOpen && Date.now() - lastMove > 6000) showInvite();
-    }, 500);
-  } else {
-    positionOrbDocked();
-    if (!sessionStorage.getItem("vg_invited")) setTimeout(showInvite, 2200);
+  // ---- First-visit invite (docked launcher only, no cursor-follow mode by design) ----
+  if (!sessionStorage.getItem("guide_invited")) {
+    setTimeout(() => {
+      if (panelOpen) return;
+      invite.textContent = "Need a quick tour?";
+      invite.classList.add("show");
+      setTimeout(() => invite.classList.remove("show"), 5000);
+      sessionStorage.setItem("guide_invited", "1");
+    }, 2200);
   }
 
-  function positionOrbDocked() {
-    orb.style.right = "22px";
-    orb.style.bottom = "22px";
-    orb.style.top = "auto";
-    orb.style.left = "auto";
-    orb.style.transform = "none";
-    orb.classList.add("docked");
-  }
-
-  function dockOrb() {
-    if (docked) return;
-    docked = true;
-    positionOrbDocked();
-  }
-  function undockOrb() {
-    if (!enableCursor) return;
-    docked = false;
-    orb.style.right = "auto";
-    orb.style.bottom = "auto";
-    orb.classList.remove("docked");
-  }
-
-  function showInvite(text) {
-    if (bubbleOpen) return;
-    if (sessionStorage.getItem("vg_invited") && !text) return;
-    const r = orb.getBoundingClientRect();
-    invite.style.left = Math.max(12, r.left - 120) + "px";
-    invite.style.top = r.top - 40 + "px";
-    invite.textContent = text || "Need a quick tour?";
-    invite.classList.add("show");
-    setTimeout(() => invite.classList.remove("show"), 4500);
-    sessionStorage.setItem("vg_invited", "1");
-  }
-
-  function openBubble() {
-    dockOrb();
-    bubble.hidden = false;
-    requestAnimationFrame(() => bubble.classList.add("vg-open"));
-    bubbleOpen = true;
-    orb.setAttribute("aria-expanded", "true");
+  function openPanel() {
+    panel.hidden = false;
+    requestAnimationFrame(() => panel.classList.add("g-open"));
+    panelOpen = true;
+    launcher.setAttribute("aria-expanded", "true");
     invite.classList.remove("show");
-    setState("ready");
     input.focus();
   }
-  function closeBubble() {
-    bubble.classList.remove("vg-open");
-    setTimeout(() => { bubble.hidden = true; }, 200);
-    bubbleOpen = false;
-    orb.setAttribute("aria-expanded", "false");
+  function closePanel() {
+    endVoiceIfActive();
+    panel.classList.remove("g-open");
+    setTimeout(() => { panel.hidden = true; }, 200);
+    panelOpen = false;
+    launcher.setAttribute("aria-expanded", "false");
+    launcher.focus();
     clearHighlight();
-    setState("idle");
-    if (enableCursor) undockOrb();
+    setLauncherState("idle");
+    setStatus("Ask your guide");
   }
 
-  orb.addEventListener("click", () => (bubbleOpen ? closeBubble() : openBubble()));
-  orb.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      bubbleOpen ? closeBubble() : openBubble();
-    }
+  launcher.addEventListener("click", () => (panelOpen ? closePanel() : openPanel()));
+  closeBtn.addEventListener("click", closePanel);
+  minimizeBtn.addEventListener("click", () => {
+    panel.classList.remove("g-open");
+    setTimeout(() => { panel.hidden = true; }, 200);
+    panelOpen = false;
+    launcher.setAttribute("aria-expanded", "false");
   });
-  closeBtn.addEventListener("click", closeBubble);
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && bubbleOpen) closeBubble();
+    if (e.key !== "Escape") return;
+    if (!ring.hidden) { clearHighlight(); return; }
+    if (panelOpen) closePanel();
   });
 
-  voiceToggle.addEventListener("click", () => {
-    voiceOn = !voiceOn;
-    voiceToggle.setAttribute("aria-pressed", String(voiceOn));
-    voiceToggle.style.color = voiceOn ? "" : "#5b6577";
-    if (!voiceOn && "speechSynthesis" in window) speechSynthesis.cancel();
-  });
-
-  // ---- Voice: pick the best available female-sounding system voice ----
-  let chosenVoice = null;
-  const FEMALE_VOICE_HINTS = [
-    "samantha", "victoria", "karen", "moira", "tessa", "female",
-    "zira", "susan", "linda", "google us english", "google uk english female",
-    "microsoft aria", "microsoft jenny", "ava", "allison", "serena",
-  ];
-  function pickVoice() {
-    if (!("speechSynthesis" in window)) return;
-    const voices = speechSynthesis.getVoices();
-    if (!voices.length) return;
-    const enVoices = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith("en"));
-    const pool = enVoices.length ? enVoices : voices;
-    chosenVoice =
-      pool.find((v) => FEMALE_VOICE_HINTS.some((hint) => v.name.toLowerCase().includes(hint))) ||
-      pool[0];
-  }
-  if ("speechSynthesis" in window) {
-    pickVoice();
-    speechSynthesis.onvoiceschanged = pickVoice;
+  function addMessage(role, text) {
+    transcript.hidden = false;
+    const div = document.createElement("div");
+    div.className = "g-msg g-msg-" + role;
+    div.textContent = text;
+    transcript.appendChild(div);
+    transcript.scrollTop = transcript.scrollHeight;
   }
 
-  function speak(text) {
-    if (!voiceOn || !("speechSynthesis" in window)) return;
+  // ---- ElevenLabs conversation lifecycle ----
+  async function startVoice() {
+    if (conversation) return;
+    setLauncherState("connecting");
+    setStatus("Connecting…");
     try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      if (chosenVoice) u.voice = chosenVoice;
-      u.pitch = 1.05;
-      u.rate = 1.0;
-      u.onstart = () => setState("speaking");
-      u.onend = () => setState("ready");
-      speechSynthesis.speak(u);
-    } catch (e) {}
-  }
-
-  function showTurn(userText, agentText, chips) {
-    userLine.textContent = userText || "";
-    agentLine.classList.remove("vg-show");
-    requestAnimationFrame(() => {
-      agentLine.textContent = agentText;
-      requestAnimationFrame(() => agentLine.classList.add("vg-show"));
-    });
-    renderChips(chips || []);
-    speak(agentText);
-  }
-
-  function renderChips(list) {
-    chipsRow.innerHTML = "";
-    list.forEach((c) => {
-      const btn = document.createElement("button");
-      btn.className = "vg-chip" + (c.accent ? " vg-chip-accent" : "");
-      btn.textContent = c.label;
-      btn.addEventListener("click", () => c.onClick());
-      chipsRow.appendChild(btn);
-    });
-  }
-
-  // ---- Company-only knowledge base ----
-  const DEFAULT_CHIPS = () => [
-    { label: "What does A+ do?", onClick: () => handleQuery("What does A+ do?") },
-    { label: "Just for me", onClick: () => handleTrack("self") },
-    { label: "For my team", onClick: () => handleTrack("team") },
-    { label: "Book a consult", onClick: () => handleQuery("How do I book a consult?") },
-  ];
-
-  const KB = [
-    { test: /tour/i, run: () => startTour() },
-    {
-      test: /(what.*(do|offer)|services)/i,
-      answer:
-        "We build voice AI receptionists, workflow automation, healthcare AI, and hands-on AI training for healthcare teams and growing businesses.",
-      go: "#services",
-    },
-    {
-      test: /(prompt clinic)/i,
-      answer:
-        "The Prompt Clinic is our hands-on AI training and community, built for people who want to actually learn how to use AI, not just read about it.",
-      go: null,
-      chips: () => [{ label: "Enter The Prompt Clinic", accent: true, onClick: () => (location.href = CONFIG.promptClinicUrl) }],
-    },
-    {
-      test: /team|founder|who.*(run|lead)/i,
-      answer: "A+ is led by Anthony, Khizar, and Jai. You can meet all three in the Leadership section.",
-      go: "#team",
-    },
-    {
-      test: /healthcare/i,
-      answer: "Healthcare is where A+ started: privacy-first AI built around patient trust and clinician time.",
-      go: "#healthcare",
-    },
-    {
-      test: /(community|slack)/i,
-      answer: "Our free Slack community gets you real-time answers and direct access to the team.",
-      go: "#community",
-      chips: () => [{ label: "Join the Slack Community", accent: true, onClick: () => window.open(CONFIG.slackUrl, "_blank", "noopener") }],
-    },
-    {
-      test: /(price|pricing|cost)/i,
-      answer: "There's no public pricing listed yet, it depends on the engagement. The fastest way to get real numbers is a quick consult.",
-      go: "#community",
-    },
-    {
-      test: /(contact|book|consult|demo)/i,
-      answer: "You can book time with the team directly, or start in the Slack community if you're not ready for a call yet.",
-      go: null,
-      chips: () => [
-        { label: "Book a consult", accent: true, onClick: () => (location.href = "booking.html") },
-        { label: "Join Slack instead", onClick: () => window.open(CONFIG.slackUrl, "_blank", "noopener") },
-      ],
-    },
-    {
-      test: /(myself|for me|individual|learn ai)/i,
-      run: () => handleTrack("self"),
-    },
-    {
-      test: /(my team|organization|org|company|business)/i,
-      run: () => handleTrack("team"),
-    },
-  ];
-
-  function handleTrack(track) {
-    visitorTrack = track;
-    if (track === "self") {
-      showTurn(
-        "I'm exploring AI for myself",
-        "Then The Prompt Clinic is the best place to start, it's our hands-on training and community for people learning AI for real.",
-        [
-          { label: "Enter The Prompt Clinic", accent: true, onClick: () => (location.href = CONFIG.promptClinicUrl) },
-          { label: "Email me info instead", onClick: () => promptEmailCapture("self") },
-        ]
-      );
-    } else {
-      showTurn(
-        "I'm looking for my team or organization",
-        "Then our Slack community is the fastest path, real-time answers from the team, and we can scope a consult from there.",
-        [
-          { label: "Join the Slack Community", accent: true, onClick: () => window.open(CONFIG.slackUrl, "_blank", "noopener") },
-          { label: "Email me info instead", onClick: () => promptEmailCapture("team") },
-        ]
-      );
+      const ElevenLabs = window.ElevenLabsClient;
+      if (!ElevenLabs) throw new Error("SDK unavailable");
+      conversation = await ElevenLabs.Conversation.startSession({
+        agentId: CONFIG.elevenLabsAgentId,
+        textOnly: false,
+        clientTools: {
+          highlight_website_section: async ({ targetId }) => {
+            highlight(GUIDE_TARGETS[targetId]);
+            return targetId in GUIDE_TARGETS ? "highlighted" : "unknown target";
+          },
+          collect_email: async ({ email, track }) => {
+            await submitEmailCapture(email, track);
+            return "captured";
+          },
+        },
+        onConnect: () => {
+          textOnlySession = false;
+          startVoiceBtn.hidden = true;
+          liveControls.classList.add("show");
+          setLauncherState("listening");
+          setStatus("Listening…");
+        },
+        onDisconnect: () => {
+          conversation = null;
+          startVoiceBtn.hidden = false;
+          liveControls.classList.remove("show");
+          setLauncherState(panelOpen ? "idle" : "idle");
+          setStatus("Ask your guide");
+        },
+        onModeChange: ({ mode }) => {
+          const s = mode === "speaking" ? "speaking" : "listening";
+          setLauncherState(s);
+          setStatus(s === "speaking" ? "Speaking…" : "Listening…");
+        },
+        onMessage: ({ message, role }) => addMessage(role === "user" ? "user" : "agent", message),
+        onError: () => {
+          setLauncherState("error");
+          setStatus("Voice unavailable, you can still type.");
+        },
+      });
+    } catch (e) {
+      setLauncherState("error");
+      setStatus("Voice unavailable right now. You can still type.");
+      conversation = null;
     }
   }
 
-  function promptEmailCapture(track) {
-    userLine.textContent = "Email me info instead";
-    agentLine.classList.remove("vg-show");
-    requestAnimationFrame(() => {
-      agentLine.textContent = "Sure, drop your email and we'll follow up.";
-      requestAnimationFrame(() => agentLine.classList.add("vg-show"));
-    });
-    renderChips([]);
-    input.type = "email";
-    input.placeholder = "you@email.com";
-    input.value = "";
-    input.focus();
-    input.dataset.captureMode = track;
+  async function ensureTextSession() {
+    if (conversation) return conversation;
+    const ElevenLabs = window.ElevenLabsClient;
+    if (!ElevenLabs) {
+      setStatus("Ace is unavailable right now.");
+      return null;
+    }
+    try {
+      conversation = await ElevenLabs.Conversation.startSession({
+        agentId: CONFIG.elevenLabsAgentId,
+        textOnly: true,
+        clientTools: {
+          highlight_website_section: async ({ targetId }) => {
+            highlight(GUIDE_TARGETS[targetId]);
+            return targetId in GUIDE_TARGETS ? "highlighted" : "unknown target";
+          },
+          collect_email: async ({ email, track }) => {
+            await submitEmailCapture(email, track);
+            return "captured";
+          },
+        },
+        onConnect: () => { textOnlySession = true; setStatus("Ask your guide"); },
+        onDisconnect: () => { conversation = null; setStatus("Ask your guide"); },
+        onMessage: ({ message, role }) => addMessage(role === "user" ? "user" : "agent", message),
+        onError: () => setStatus("Ace is unavailable right now."),
+      });
+      return conversation;
+    } catch (e) {
+      setStatus("Ace is unavailable right now.");
+      return null;
+    }
   }
+
+  function endVoiceIfActive() {
+    if (conversation) {
+      conversation.endSession();
+      conversation = null;
+    }
+    startVoiceBtn.hidden = false;
+    liveControls.classList.remove("show");
+  }
+
+  startVoiceBtn.addEventListener("click", startVoice);
+  endBtn.addEventListener("click", () => {
+    endVoiceIfActive();
+    setLauncherState("idle");
+    setStatus("Ask your guide");
+  });
+  muteBtn.addEventListener("click", () => {
+    if (!conversation) return;
+    const muted = muteBtn.dataset.muted !== "true";
+    conversation.setMicMuted(muted);
+    muteBtn.dataset.muted = String(muted);
+    setLauncherState(muted ? "muted" : "listening");
+  });
+
+  async function sendTyped() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addMessage("user", text);
+    const convo = await ensureTextSession();
+    if (convo) convo.sendUserMessage(text);
+  }
+  sendBtn.addEventListener("click", sendTyped);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendTyped();
+    else if (conversation) conversation.sendUserActivity();
+  });
 
   async function submitEmailCapture(email, track) {
-    userLine.textContent = email;
-    input.type = "text";
-    input.placeholder = "Ask a question…";
-    delete input.dataset.captureMode;
     if (!CONFIG.slackWebhookUrl || CONFIG.slackWebhookUrl.startsWith("REPLACE_ME")) {
-      console.warn("[Ace] Slack webhook not configured yet — email captured locally only:", email, track);
-    } else {
-      try {
-        await fetch(CONFIG.slackWebhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: `New Ace email capture (${track === "self" ? "Prompt Clinic" : "Team/Org"}): ${email}`,
-          }),
-        });
-      } catch (e) {
-        console.warn("[Ace] Slack webhook post failed", e);
-      }
-    }
-    showTurn(email, "Got it, someone from the team will follow up soon.", DEFAULT_CHIPS());
-  }
-
-  function handleQuery(text) {
-    if (!text) return;
-    if (input.dataset.captureMode) {
-      submitEmailCapture(text, input.dataset.captureMode);
+      console.warn("[Ace] Slack webhook not configured yet, email captured locally only:", email, track);
       return;
     }
-    userLine.textContent = text;
-    setState("thinking");
-    setTimeout(() => {
-      const hit = KB.find((k) => k.test.test(text));
-      if (hit && hit.run) {
-        hit.run();
-        return;
-      }
-      const answer =
-        hit && hit.answer
-          ? hit.answer
-          : "I only know about A+ right now, not a general AI yet. I can tell you about our services, healthcare work, the Prompt Clinic, or how to get in touch.";
-      const chips = hit && hit.chips ? hit.chips() : DEFAULT_CHIPS();
-      showTurn(text, answer, chips);
-      if (hit && hit.go) highlight(hit.go);
-    }, 350);
-  }
-
-  sendBtn.addEventListener("click", () => {
-    const v = input.value.trim();
-    input.value = "";
-    if (v) handleQuery(v);
-  });
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") sendBtn.click();
-  });
-  chipsRow.querySelectorAll(".vg-chip").forEach((c) => {
-    c.addEventListener("click", () => handleQuery(c.dataset.q || c.textContent));
-  });
-
-  // ---- Speech recognition (mic), only ever started on direct click ----
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SR) {
-    const rec = new SR();
-    rec.continuous = false;
-    rec.interimResults = false;
-    rec.lang = "en-US";
-    rec.onstart = () => {
-      setState("listening");
-      micBtn.dataset.active = "true";
-    };
-    rec.onresult = (e) => handleQuery(e.results[0][0].transcript);
-    rec.onerror = () => {
-      setState("error");
-      showTurn("", "Voice isn't available right now, but you can still type.", DEFAULT_CHIPS());
-      setTimeout(() => setState("ready"), 1500);
-    };
-    rec.onend = () => {
-      micBtn.dataset.active = "false";
-      if (orb.dataset.state === "listening") setState("ready");
-    };
-    micBtn.addEventListener("click", () => {
-      try {
-        rec.start();
-      } catch (e) {}
-    });
-  } else {
-    micBtn.disabled = true;
-    micBtn.title = "Voice isn't available in this browser, but you can still type.";
-  }
-
-  // ---- Guided tour ----
-  const TOUR = [
-    { sel: "#services", msg: "Here's what we actually do, voice AI, automation, healthcare AI, and training." },
-    { sel: "#healthcare", msg: "Healthcare is where A+ started. This section covers our approach." },
-    { sel: "#story", msg: "This is our story, and the leadership team behind A+." },
-    { sel: "#community", msg: "And this is how you get in, join Slack or the Prompt Clinic." },
-  ];
-  function startTour() {
-    let step = 0;
-    const advance = () => {
-      if (step >= TOUR.length) {
-        showTurn("", "That's the tour. Want to go deeper on anything?", DEFAULT_CHIPS());
-        clearHighlight();
-        return;
-      }
-      const t = TOUR[step];
-      setState("guiding");
-      highlight(t.sel, true);
-      showTurn(step === 0 ? "Give me a quick tour" : "", t.msg, [
-        { label: step < TOUR.length - 1 ? "Next" : "Finish", accent: true, onClick: () => { step++; advance(); } },
-        { label: "Skip", onClick: () => { clearHighlight(); showTurn("", "No problem, ask me anything.", DEFAULT_CHIPS()); } },
-      ]);
-    };
-    advance();
-  }
-
-  // ---- "Here's our story" narrative mode, triggered from the Our Story CTA ----
-  const STORY_BEATS = [
-    "A+ Active Services started with one observation: talented, dedicated people were buried in administrative work instead of doing what they do best.",
-    "Across healthcare, small business, and community organizations, we kept seeing the same pattern, paperwork instead of patients, data entry instead of decisions.",
-    "AI became the bridge, not to replace people, but to give them their time back.",
-    "That's the whole company in one line: AI with a human touch.",
-  ];
-  function startStoryMode() {
-    openBubble();
-    let step = 0;
-    const advance = () => {
-      if (step >= STORY_BEATS.length) {
-        showTurn("", "Want to go deeper, for yourself or for your team?", DEFAULT_CHIPS());
-        return;
-      }
-      showTurn(step === 0 ? "Here's our story" : "", STORY_BEATS[step], [
-        { label: step < STORY_BEATS.length - 1 ? "Continue" : "What's next?", accent: true, onClick: () => { step++; advance(); } },
-      ]);
-    };
-    advance();
-  }
-  document.addEventListener("click", (e) => {
-    const trigger = e.target.closest && e.target.closest("[data-ace-story-trigger]");
-    if (trigger) {
-      e.preventDefault();
-      startStoryMode();
+    try {
+      await fetch(CONFIG.slackWebhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: `New Ace email capture (${track}): ${email}` }),
+      });
+    } catch (e) {
+      console.warn("[Ace] Slack webhook post failed", e);
     }
-  });
+  }
 
+  // ---- Tour / highlight (allowlisted targets only) ----
   let highlightTimer = null;
-  function highlight(selector, persistent) {
+  function highlight(selector) {
+    if (!selector) return;
     const el = document.querySelector(selector);
     if (!el) return;
+    setLauncherState("guiding");
     el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
     clearTimeout(highlightTimer);
     setTimeout(() => positionRing(el), prefersReduced ? 0 : 380);
-    if (!persistent) highlightTimer = setTimeout(clearHighlight, 4000);
+    highlightTimer = setTimeout(clearHighlight, 5000);
   }
   function positionRing(el) {
     const r = el.getBoundingClientRect();
@@ -625,7 +499,19 @@
   }
   function clearHighlight() {
     ring.hidden = true;
+    if (launcher.dataset.state === "guiding") setLauncherState(conversation ? "listening" : "idle");
   }
 
-  setState("idle");
+  // ---- "Here's our story" CTA opens the panel with a suggested prompt ----
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest && e.target.closest("[data-ace-story-trigger]");
+    if (!trigger) return;
+    e.preventDefault();
+    openPanel();
+    input.value = "Tell me the A+ story";
+    input.focus();
+  });
+
+  setLauncherState("idle");
+  if (isMobile) { /* mobile uses the same docked launcher + bottom-sheet panel via CSS breakpoint above */ }
 })();
