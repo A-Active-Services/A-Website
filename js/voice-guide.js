@@ -1,8 +1,8 @@
 /**
  * A+ Active Services — "Quinn" Guide Orb.
- * Docked glass-orb launcher (brand blue/red) that opens a voice-first panel
- * wired to a public ElevenLabs Conversational AI agent, with a typed
- * text-only fallback. No canned chat-bubble UI, no chips.
+ * Docked glass-orb launcher that opens a voice-first panel wired to a public
+ * ElevenLabs Conversational AI agent: live orb + audio-reactive waveform,
+ * one big mic button, typed fallback. No chat-bubble history UI.
  * Built per CLAUDE-VOICE-GUIDE-WIDGET-BUILD.md.
  */
 (function () {
@@ -30,7 +30,7 @@
   };
 
   const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const isMobile = matchMedia("(max-width: 640px)").matches;
+  const WAVE_BARS = 9;
 
   const host = document.createElement("div");
   host.id = "aplus-guide-host";
@@ -57,75 +57,61 @@
         width: 52px; height: 52px; border-radius: 999px; padding: 0; border: none;
         cursor: pointer; pointer-events: auto; isolation: isolate;
         transform: translateZ(0);
+        transition: transform .18s ease, width .2s ease, height .2s ease, filter .3s ease;
         filter:
-          drop-shadow(0 7px 14px rgba(0,8,28,.38))
-          drop-shadow(0 0 14px rgba(46,124,255,.22));
-        transition: transform .18s ease, width .2s ease, height .2s ease;
+          drop-shadow(0 7px 14px rgba(0,8,28,.4))
+          drop-shadow(0 0 16px rgba(46,124,255,.35));
+        animation: g-pulse-glow 2.6s ease-in-out infinite;
       }
-      .g-launcher:hover, .g-launcher:focus-visible { transform: scale(1.08); }
+      .g-launcher:hover, .g-launcher:focus-visible { transform: scale(1.1); }
       .g-launcher:active { transform: scale(.9); }
       @media (max-width: 640px) { .g-launcher { width: 56px; height: 56px; right: 18px; bottom: 18px; } }
+      @keyframes g-pulse-glow {
+        0%, 100% { filter: drop-shadow(0 7px 14px rgba(0,8,28,.4)) drop-shadow(0 0 12px rgba(46,124,255,.3)); }
+        50% { filter: drop-shadow(0 7px 18px rgba(0,8,28,.45)) drop-shadow(0 0 26px rgba(46,124,255,.65)); }
+      }
 
-      /* Fluid, silk-like living orb: rotating/drifting gradient layers clipped
-         to a clean circular frame (not a spinning rigid disc, and not a flat
-         glass ball, the material inside churns continuously). */
+      /* Clean glass-sphere orb: soft white highlight, deep blue glass body,
+         a thin warm rim for brand identity. Noticeable breathing pulse,
+         not a multi-hue swirl. */
       .g-orb { position: absolute; inset: 0; overflow: hidden; border-radius: 999px; background: #060c1e; }
       .g-panel-orb { position: relative; overflow: hidden; border-radius: 999px; background: #060c1e; }
       .g-orb__base {
         position: absolute; inset: 0; border-radius: inherit;
-        background: radial-gradient(circle at 50% 50%, #0d1a3d 0%, #060c1e 82%);
-      }
-      .g-orb__swirl {
-        position: absolute; inset: -55%; border-radius: 42%;
-        background: conic-gradient(from 0deg, var(--g-primary), #bcd4ff, var(--g-secondary), #ffb59e, var(--g-primary));
-        filter: blur(3px);
-        mix-blend-mode: screen;
-        opacity: .8;
-        animation: g-swirl-spin 10s linear infinite;
-      }
-      .g-orb__blob {
-        position: absolute; width: 75%; height: 75%; border-radius: 50%;
-        background: radial-gradient(circle, var(--g-secondary), transparent 70%);
-        filter: blur(5px);
-        mix-blend-mode: screen;
-        opacity: .55;
-        animation: g-blob-drift 5.5s ease-in-out infinite;
-      }
-      .g-orb__shell {
-        position: absolute; inset: 0; border-radius: inherit;
         background:
-          radial-gradient(circle at 30% 24%, rgba(255,255,255,.5) 0 6%, transparent 26%),
-          radial-gradient(circle at 50% 105%, rgba(0,0,0,.55), transparent 55%);
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,.4), inset 0 -6px 12px rgba(0,0,0,.32);
+          radial-gradient(circle at 32% 26%, rgba(255,255,255,.85) 0 4%, rgba(255,255,255,.22) 12%, transparent 30%),
+          radial-gradient(circle at 55% 60%, #3f7bff 0%, #14265c 58%, #060c1e 88%),
+          conic-gradient(from 200deg, rgba(255,59,59,.35), transparent 30%, transparent 70%, rgba(255,59,59,.2));
+        box-shadow:
+          inset 0 0 0 1px rgba(255,255,255,.4),
+          inset 6px 6px 12px rgba(255,255,255,.12),
+          inset -8px -10px 18px rgba(2,6,20,.55);
+        animation: g-orb-breathe 2.6s ease-in-out infinite;
       }
       .g-orb__core {
-        position: absolute; inset: 43%; border-radius: inherit; background: var(--g-core);
-        box-shadow: 0 0 4px #fff, 0 0 10px #9db8ff, 0 0 16px rgba(46,124,255,.7);
+        position: absolute; inset: 42%; border-radius: inherit; background: var(--g-core);
+        box-shadow: 0 0 4px #fff, 0 0 12px #bcd0ff, 0 0 20px rgba(46,124,255,.8);
         transition: box-shadow .3s ease; z-index: 2;
+        animation: g-core-pulse 2.6s ease-in-out infinite;
       }
       .g-orb__highlight {
-        position: absolute; inset: 8% 40% 55% 14%; border-radius: 60% 45% 55% 38%;
-        background: linear-gradient(145deg, rgba(255,255,255,.55), rgba(255,255,255,0));
-        transform: rotate(-18deg); z-index: 2;
+        position: absolute; inset: 8% 42% 58% 16%; border-radius: 60% 45% 55% 38%;
+        background: linear-gradient(145deg, rgba(255,255,255,.6), rgba(255,255,255,0));
+        transform: rotate(-18deg); z-index: 2; pointer-events: none;
       }
-      @keyframes g-swirl-spin { to { transform: rotate(360deg); } }
-      @keyframes g-blob-drift {
-        0%, 100% { transform: translate(-8%, -6%) scale(1); }
-        50% { transform: translate(12%, 10%) scale(1.18); }
+      @keyframes g-orb-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+      @keyframes g-core-pulse {
+        0%, 100% { box-shadow: 0 0 4px #fff, 0 0 10px #bcd0ff, 0 0 16px rgba(46,124,255,.65); }
+        50% { box-shadow: 0 0 6px #fff, 0 0 16px #bcd0ff, 0 0 28px rgba(46,124,255,.9); }
       }
-      .g-launcher[data-state="idle"] .g-orb { animation: g-breathe 4.2s ease-in-out infinite; }
-      .g-launcher[data-state="listening"] .g-orb__swirl { animation-duration: 4s; }
-      .g-launcher[data-state="listening"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 14px var(--g-secondary), 0 0 22px rgba(255,59,59,.7); }
-      .g-launcher[data-state="speaking"] .g-orb__swirl { animation-duration: 3s; }
-      .g-launcher[data-state="speaking"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 16px var(--g-primary), 0 0 26px rgba(46,124,255,.8); }
-      .g-launcher[data-state="thinking"] .g-orb { animation: g-pulse-soft 1.4s ease-in-out infinite; }
-      .g-launcher[data-state="connecting"] .g-orb__swirl { animation-duration: 1.6s; }
+      .g-launcher[data-state="listening"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 16px var(--g-secondary), 0 0 26px rgba(255,59,59,.8); }
+      .g-launcher[data-state="speaking"] .g-orb__core { box-shadow: 0 0 6px #fff, 0 0 18px var(--g-primary), 0 0 30px rgba(46,124,255,.9); }
+      .g-launcher[data-state="thinking"] .g-orb__base { animation: g-orb-breathe 1s ease-in-out infinite; }
+      .g-launcher[data-state="connecting"] .g-orb__base { animation: g-orb-breathe .8s ease-in-out infinite; }
       .g-launcher[data-state="muted"] .g-orb { opacity: .5; }
-      .g-launcher[data-state="muted"] .g-orb__swirl, .g-launcher[data-state="muted"] .g-orb__blob { animation-play-state: paused; }
-      @keyframes g-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-      @keyframes g-pulse-soft { 0%,100% { opacity: 1; } 50% { opacity: .7; } }
+      .g-launcher[data-state="muted"] .g-orb__base, .g-launcher[data-state="muted"] .g-orb__core { animation-play-state: paused; }
       @media (prefers-reduced-motion: reduce) {
-        .g-orb__swirl, .g-orb__blob, .g-launcher[data-state] .g-orb { animation: none; }
+        .g-launcher, .g-orb__base, .g-orb__core { animation: none !important; }
       }
 
       .g-invite {
@@ -141,7 +127,7 @@
       .g-panel {
         position: fixed; right: 22px; bottom: 88px; z-index: 2147483001;
         width: 340px; max-width: calc(100vw - 32px);
-        max-height: min(620px, calc(100vh - 40px));
+        max-height: min(640px, calc(100vh - 40px));
         display: flex; flex-direction: column;
         background: var(--g-panel); backdrop-filter: blur(14px);
         border: 1px solid var(--g-border); border-radius: 26px;
@@ -154,58 +140,75 @@
       @media (max-width: 640px) {
         .g-panel {
           right: 0; left: 0; bottom: 0; width: 100%; max-width: 100%;
-          border-radius: 24px 24px 0 0; max-height: min(78vh, 620px);
+          border-radius: 24px 24px 0 0; max-height: min(84vh, 640px);
           padding-bottom: env(safe-area-inset-bottom);
         }
       }
 
-      .g-panel-head { display: flex; align-items: center; gap: 12px; padding: 18px 18px 10px; }
-      .g-panel-orb { width: 40px; height: 40px; border-radius: 999px; position: relative; flex-shrink: 0; }
-      .g-panel-title { font-weight: 700; color: var(--g-text); font-size: .95rem; }
-      .g-panel-status { font-size: .78rem; color: var(--g-muted); margin-top: 1px; }
+      .g-panel-head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px; }
+      .g-panel-orb { width: 32px; height: 32px; border-radius: 999px; position: relative; flex-shrink: 0; }
+      .g-panel-title { font-weight: 700; color: var(--g-text); font-size: .9rem; }
+      .g-panel-status { font-size: .74rem; color: var(--g-muted); margin-top: 1px; }
       .g-panel-controls { margin-left: auto; display: flex; gap: 6px; }
       .g-icon-btn {
-        width: 30px; height: 30px; min-width: 44px; min-height: 44px; margin: -7px;
+        width: 30px; height: 30px; min-width: 40px; min-height: 40px; margin: -5px;
         border-radius: 50%; border: 1px solid var(--g-border); background: transparent;
         color: var(--g-muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
         font-size: .95rem;
       }
       .g-icon-btn:hover, .g-icon-btn:focus-visible { color: #fff; border-color: var(--g-primary); }
-      @media (max-width: 640px) { .g-icon-btn { width: 44px; height: 44px; margin: 0; } }
 
-      .g-panel-body { padding: 4px 18px 18px; overflow-y: auto; flex: 1; min-height: 0; }
+      .g-panel-body { padding: 6px 18px 18px; overflow-y: auto; flex: 1; min-height: 0; }
 
-      .g-start-voice {
-        width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px;
-        padding: 22px 16px; border-radius: 18px; border: 1px solid var(--g-border);
-        background: rgba(46,124,255,.08); cursor: pointer; margin-bottom: 14px;
+      /* ---- Stage: the voice-first centerpiece ---- */
+      .g-stage { display: flex; flex-direction: column; align-items: center; padding: 10px 0 18px; }
+      .g-stage-visual { display: flex; align-items: center; justify-content: center; gap: 16px; height: 84px; }
+      .g-stage-orb { position: relative; width: 84px; height: 84px; border-radius: 999px; flex-shrink: 0; }
+      .g-wave { display: flex; align-items: center; gap: 4px; height: 56px; }
+      .g-wave span {
+        width: 4px; border-radius: 3px; height: 10px;
+        background: linear-gradient(180deg, var(--g-primary), var(--g-secondary));
+        transition: height .12s ease;
+        animation: g-wave-idle 2.2s ease-in-out infinite;
       }
-      .g-start-voice:hover, .g-start-voice:focus-visible { border-color: var(--g-primary); background: rgba(46,124,255,.14); }
-      .g-start-voice-icon {
-        width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        background: linear-gradient(135deg, var(--g-primary), #1a4fc9); color: #fff; font-size: 1.3rem;
+      .g-wave span:nth-child(1) { animation-delay: 0s; }
+      .g-wave span:nth-child(2) { animation-delay: .1s; }
+      .g-wave span:nth-child(3) { animation-delay: .2s; }
+      .g-wave span:nth-child(4) { animation-delay: .3s; }
+      .g-wave span:nth-child(5) { animation-delay: .4s; }
+      .g-wave span:nth-child(6) { animation-delay: .3s; }
+      .g-wave span:nth-child(7) { animation-delay: .2s; }
+      .g-wave span:nth-child(8) { animation-delay: .1s; }
+      .g-wave span:nth-child(9) { animation-delay: 0s; }
+      @keyframes g-wave-idle { 0%, 100% { height: 8px; } 50% { height: 26px; } }
+      .g-wave.g-wave-live span { animation: none; }
+      @media (prefers-reduced-motion: reduce) { .g-wave span { animation: none; height: 14px; } }
+
+      .g-stage-label { margin-top: 14px; font-weight: 700; color: var(--g-text); font-size: .95rem; min-height: 1.3em; }
+      .g-stage-caption { margin-top: 4px; font-size: .82rem; color: var(--g-muted); text-align: center; line-height: 1.4; min-height: 1.2em; max-width: 280px; }
+
+      .g-stage-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+      .g-mic-btn {
+        width: 62px; height: 62px; border-radius: 50%; border: none; cursor: pointer;
+        background: linear-gradient(135deg, var(--g-primary), #1a4fc9); color: #fff; font-size: 1.5rem;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 10px 24px -8px rgba(46,124,255,.6);
+        transition: transform .15s ease, background .2s ease;
       }
-      .g-start-voice-label { font-weight: 700; color: var(--g-text); font-size: .92rem; }
-      .g-start-voice-sub { font-size: .76rem; color: var(--g-muted); text-align: center; }
-
-      .g-transcript { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; max-height: 220px; overflow-y: auto; }
-      .g-transcript[hidden] { display: none; }
-      .g-msg { max-width: 88%; padding: 8px 12px; border-radius: 12px; font-size: .85rem; line-height: 1.45; }
-      .g-msg-agent { align-self: flex-start; background: rgba(255,255,255,.06); color: var(--g-text); }
-      .g-msg-user { align-self: flex-end; background: var(--g-primary); color: #fff; }
-
-      .g-live-controls { display: none; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
-      .g-live-controls.show { display: flex; }
-      .g-live-controls button {
-        width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--g-border);
-        background: rgba(255,255,255,.04); color: var(--g-muted); cursor: pointer;
-        display: flex; align-items: center; justify-content: center; font-size: 1rem;
+      .g-mic-btn:hover, .g-mic-btn:focus-visible { transform: scale(1.06); }
+      .g-mic-btn[data-active="true"] { background: linear-gradient(135deg, var(--g-secondary), #b91c1c); box-shadow: 0 10px 24px -8px rgba(255,59,59,.6); }
+      .g-mic-btn[data-muted="true"] { background: linear-gradient(135deg, #3a4256, #232838); box-shadow: none; }
+      .g-end-btn-round {
+        width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(255,59,59,.4); cursor: pointer;
+        background: rgba(255,59,59,.1); color: var(--g-secondary); font-size: 1.1rem;
+        display: flex; align-items: center; justify-content: center;
       }
-      .g-live-controls button:hover { color: #fff; }
-      .g-live-controls .g-end-btn { color: var(--g-secondary); border-color: rgba(255,59,59,.4); }
-      .g-live-controls .g-mute-btn[data-muted="true"] { color: var(--g-secondary); border-color: rgba(255,59,59,.4); }
+      .g-end-btn-round:hover { background: rgba(255,59,59,.2); }
+      .g-end-btn-round[hidden] { display: none; }
 
-      .g-inputrow { display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--g-border); }
+      .g-stage-hint { margin-top: 14px; font-size: .74rem; color: var(--g-muted); text-align: center; }
+
+      .g-inputrow { display: flex; gap: 8px; padding-top: 14px; margin-top: 8px; border-top: 1px solid var(--g-border); }
       .g-inputrow input {
         flex: 1; min-width: 0; background: rgba(255,255,255,.05); border: 1px solid var(--g-border);
         border-radius: 100px; padding: 10px 16px; color: var(--g-text); font-size: .85rem; outline: none;
@@ -236,16 +239,16 @@
     </style>
 
     <button class="g-launcher" type="button" data-state="idle" aria-haspopup="dialog" aria-expanded="false" aria-label="Talk to Quinn, the A+ Active Services guide">
-      <span class="g-orb"><span class="g-orb__base"></span><span class="g-orb__swirl"></span><span class="g-orb__blob"></span><span class="g-orb__shell"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
+      <span class="g-orb"><span class="g-orb__base"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
     </button>
     <div class="g-invite" role="status"></div>
 
     <div class="g-panel" hidden role="dialog" aria-modal="false" aria-label="Quinn, the A+ Active Services guide">
       <div class="g-panel-head">
-        <span class="g-panel-orb"><span class="g-orb__base"></span><span class="g-orb__swirl"></span><span class="g-orb__blob"></span><span class="g-orb__shell"></span><span class="g-orb__core"></span></span>
+        <span class="g-panel-orb"><span class="g-orb__base"></span><span class="g-orb__core"></span></span>
         <div>
           <div class="g-panel-title">${CONFIG.agentName}</div>
-          <div class="g-panel-status" aria-live="polite">Ask your guide</div>
+          <div class="g-panel-status" aria-live="off">Ask your guide</div>
         </div>
         <div class="g-panel-controls">
           <button class="g-icon-btn g-minimize" type="button" aria-label="Minimize">&#8722;</button>
@@ -253,15 +256,18 @@
         </div>
       </div>
       <div class="g-panel-body">
-        <button class="g-start-voice" type="button">
-          <span class="g-start-voice-icon">&#127908;</span>
-          <span class="g-start-voice-label">Start Voice</span>
-          <span class="g-start-voice-sub">Talk to Quinn out loud. Mic access starts only when you tap this.</span>
-        </button>
-        <div class="g-transcript" hidden></div>
-        <div class="g-live-controls">
-          <button class="g-mute-btn" type="button" data-muted="false" aria-label="Mute microphone" title="Mute">&#127908;</button>
-          <button class="g-end-btn" type="button" aria-label="End voice session" title="End">&#9209;</button>
+        <div class="g-stage">
+          <div class="g-stage-visual">
+            <span class="g-stage-orb"><span class="g-orb__base"></span><span class="g-orb__core"></span><span class="g-orb__highlight"></span></span>
+            <div class="g-wave" aria-hidden="true">${"<span></span>".repeat(WAVE_BARS)}</div>
+          </div>
+          <div class="g-stage-label" aria-live="polite">Ask your guide</div>
+          <div class="g-stage-caption" aria-live="polite"></div>
+          <div class="g-stage-controls">
+            <button class="g-mic-btn" type="button" data-active="false" data-muted="false" aria-label="Start voice with Quinn">&#127908;</button>
+            <button class="g-end-btn-round" type="button" hidden aria-label="End voice session" title="End">&#9209;</button>
+          </div>
+          <p class="g-stage-hint">Tap to talk out loud, mic access starts only then.</p>
         </div>
         <div class="g-inputrow">
           <input type="text" placeholder="Or type a question…" aria-label="Type a question for Quinn">
@@ -282,26 +288,29 @@
   const invite = root.querySelector(".g-invite");
   const panel = root.querySelector(".g-panel");
   const panelStatus = root.querySelector(".g-panel-status");
+  const stageLabel = root.querySelector(".g-stage-label");
+  const stageCaption = root.querySelector(".g-stage-caption");
   const closeBtn = root.querySelector(".g-close");
   const minimizeBtn = root.querySelector(".g-minimize");
-  const startVoiceBtn = root.querySelector(".g-start-voice");
-  const transcript = root.querySelector(".g-transcript");
-  const liveControls = root.querySelector(".g-live-controls");
-  const muteBtn = root.querySelector(".g-mute-btn");
-  const endBtn = root.querySelector(".g-end-btn");
+  const micBtn = root.querySelector(".g-mic-btn");
+  const endBtn = root.querySelector(".g-end-btn-round");
+  const stageHint = root.querySelector(".g-stage-hint");
+  const wave = root.querySelector(".g-wave");
+  const waveBars = Array.from(root.querySelectorAll(".g-wave span"));
   const input = root.querySelector(".g-inputrow input");
   const sendBtn = root.querySelector(".g-send");
   const ring = root.querySelector(".g-ring");
 
   let panelOpen = false;
   let conversation = null;
-  let textOnlySession = false;
+  let wavePollId = null;
 
   function setLauncherState(s) {
     launcher.dataset.state = s;
   }
   function setStatus(text) {
     panelStatus.textContent = text;
+    stageLabel.textContent = text;
   }
 
   // ---- First-visit invite (docked launcher only, no cursor-follow mode by design) ----
@@ -349,48 +358,80 @@
     if (panelOpen) closePanel();
   });
 
-  function addMessage(role, text) {
-    transcript.hidden = false;
-    const div = document.createElement("div");
-    div.className = "g-msg g-msg-" + role;
-    div.textContent = text;
-    transcript.appendChild(div);
-    transcript.scrollTop = transcript.scrollHeight;
+  function showCaption(role, text) {
+    stageCaption.textContent = (role === "user" ? "You: " : "") + text;
+  }
+
+  // ---- Live waveform, real audio volume once connected, gentle idle breathing otherwise ----
+  function startWavePoll() {
+    wave.classList.add("g-wave-live");
+    stopWavePoll();
+    const phases = waveBars.map((_, i) => i * 0.6);
+    let t = 0;
+    function tick() {
+      if (!conversation) return;
+      t += 0.12;
+      let vol = 0;
+      try {
+        vol = Math.max(conversation.getInputVolume ? conversation.getInputVolume() : 0, conversation.getOutputVolume ? conversation.getOutputVolume() : 0);
+      } catch (e) {}
+      waveBars.forEach((bar, i) => {
+        const wobble = (Math.sin(t + phases[i]) + 1) / 2;
+        const h = 8 + vol * 46 * (0.5 + wobble * 0.5) + wobble * 4;
+        bar.style.height = Math.max(6, Math.min(56, h)) + "px";
+      });
+      wavePollId = requestAnimationFrame(tick);
+    }
+    tick();
+  }
+  function stopWavePoll() {
+    if (wavePollId) cancelAnimationFrame(wavePollId);
+    wavePollId = null;
+    wave.classList.remove("g-wave-live");
+    waveBars.forEach((bar) => { bar.style.height = ""; });
   }
 
   // ---- ElevenLabs conversation lifecycle ----
+  function makeClientTools() {
+    return {
+      highlight_website_section: async ({ targetId }) => {
+        highlight(GUIDE_TARGETS[targetId]);
+        return targetId in GUIDE_TARGETS ? "highlighted" : "unknown target";
+      },
+      collect_email: async ({ email, track }) => {
+        await submitEmailCapture(email, track);
+        return "captured";
+      },
+    };
+  }
+
   async function startVoice() {
     if (conversation) return;
     setLauncherState("connecting");
     setStatus("Connecting…");
+    micBtn.dataset.active = "true";
     try {
       const ElevenLabs = window.ElevenLabsClient;
       if (!ElevenLabs) throw new Error("SDK unavailable");
       conversation = await ElevenLabs.Conversation.startSession({
         agentId: CONFIG.elevenLabsAgentId,
         textOnly: false,
-        clientTools: {
-          highlight_website_section: async ({ targetId }) => {
-            highlight(GUIDE_TARGETS[targetId]);
-            return targetId in GUIDE_TARGETS ? "highlighted" : "unknown target";
-          },
-          collect_email: async ({ email, track }) => {
-            await submitEmailCapture(email, track);
-            return "captured";
-          },
-        },
+        clientTools: makeClientTools(),
         onConnect: () => {
-          textOnlySession = false;
-          startVoiceBtn.hidden = true;
-          liveControls.classList.add("show");
+          endBtn.hidden = false;
           setLauncherState("listening");
           setStatus("Listening…");
+          startWavePoll();
+          stageHint.textContent = "Tap the mic to mute, or the red button to end.";
         },
         onDisconnect: () => {
           conversation = null;
-          startVoiceBtn.hidden = false;
-          liveControls.classList.remove("show");
-          setLauncherState(panelOpen ? "idle" : "idle");
+          micBtn.dataset.active = "false";
+          micBtn.dataset.muted = "false";
+          endBtn.hidden = true;
+          stopWavePoll();
+          stageHint.textContent = "Tap to talk out loud, mic access starts only then.";
+          setLauncherState("idle");
           setStatus("Ask your guide");
         },
         onModeChange: ({ mode }) => {
@@ -398,15 +439,17 @@
           setLauncherState(s);
           setStatus(s === "speaking" ? "Speaking…" : "Listening…");
         },
-        onMessage: ({ message, role }) => addMessage(role === "user" ? "user" : "agent", message),
+        onMessage: ({ message, role }) => showCaption(role === "user" ? "user" : "agent", message),
         onError: () => {
           setLauncherState("error");
           setStatus("Voice unavailable, you can still type.");
+          micBtn.dataset.active = "false";
         },
       });
     } catch (e) {
       setLauncherState("error");
       setStatus("Voice unavailable right now. You can still type.");
+      micBtn.dataset.active = "false";
       conversation = null;
     }
   }
@@ -422,19 +465,10 @@
       conversation = await ElevenLabs.Conversation.startSession({
         agentId: CONFIG.elevenLabsAgentId,
         textOnly: true,
-        clientTools: {
-          highlight_website_section: async ({ targetId }) => {
-            highlight(GUIDE_TARGETS[targetId]);
-            return targetId in GUIDE_TARGETS ? "highlighted" : "unknown target";
-          },
-          collect_email: async ({ email, track }) => {
-            await submitEmailCapture(email, track);
-            return "captured";
-          },
-        },
-        onConnect: () => { textOnlySession = true; setStatus("Ask your guide"); },
+        clientTools: makeClientTools(),
+        onConnect: () => setStatus("Ask your guide"),
         onDisconnect: () => { conversation = null; setStatus("Ask your guide"); },
-        onMessage: ({ message, role }) => addMessage(role === "user" ? "user" : "agent", message),
+        onMessage: ({ message, role }) => showCaption(role === "user" ? "user" : "agent", message),
         onError: () => setStatus("Quinn is unavailable right now."),
       });
       return conversation;
@@ -449,29 +483,33 @@
       conversation.endSession();
       conversation = null;
     }
-    startVoiceBtn.hidden = false;
-    liveControls.classList.remove("show");
+    micBtn.dataset.active = "false";
+    micBtn.dataset.muted = "false";
+    endBtn.hidden = true;
+    stopWavePoll();
   }
 
-  startVoiceBtn.addEventListener("click", startVoice);
+  micBtn.addEventListener("click", () => {
+    if (!conversation) {
+      startVoice();
+      return;
+    }
+    const muted = micBtn.dataset.muted !== "true";
+    conversation.setMicMuted(muted);
+    micBtn.dataset.muted = String(muted);
+    setLauncherState(muted ? "muted" : "listening");
+  });
   endBtn.addEventListener("click", () => {
     endVoiceIfActive();
     setLauncherState("idle");
     setStatus("Ask your guide");
-  });
-  muteBtn.addEventListener("click", () => {
-    if (!conversation) return;
-    const muted = muteBtn.dataset.muted !== "true";
-    conversation.setMicMuted(muted);
-    muteBtn.dataset.muted = String(muted);
-    setLauncherState(muted ? "muted" : "listening");
   });
 
   async function sendTyped() {
     const text = input.value.trim();
     if (!text) return;
     input.value = "";
-    addMessage("user", text);
+    showCaption("user", text);
     const convo = await ensureTextSession();
     if (convo) convo.sendUserMessage(text);
   }
@@ -533,5 +571,4 @@
   });
 
   setLauncherState("idle");
-  if (isMobile) { /* mobile uses the same docked launcher + bottom-sheet panel via CSS breakpoint above */ }
 })();
