@@ -344,7 +344,14 @@
     setStatus("Ask your guide");
   }
 
-  launcher.addEventListener("click", () => (panelOpen ? closePanel() : openPanel()));
+  launcher.addEventListener("click", () => {
+    if (panelOpen) {
+      closePanel();
+      return;
+    }
+    openPanel();
+    startVoice();
+  });
   closeBtn.addEventListener("click", closePanel);
   minimizeBtn.addEventListener("click", () => {
     panel.classList.remove("g-open");
@@ -405,8 +412,10 @@
     };
   }
 
+  let connecting = false;
   async function startVoice() {
-    if (conversation) return;
+    if (conversation || connecting) return;
+    connecting = true;
     setLauncherState("connecting");
     setStatus("Connecting…");
     micBtn.dataset.active = "true";
@@ -451,6 +460,8 @@
       setStatus("Voice unavailable right now. You can still type.");
       micBtn.dataset.active = "false";
       conversation = null;
+    } finally {
+      connecting = false;
     }
   }
 
