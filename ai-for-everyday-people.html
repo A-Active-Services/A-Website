@@ -18,7 +18,9 @@
     .maven-mark { display: block; font-size: 0.82rem; color: var(--text-muted); margin-top: 18px; }
     .maven-mark strong { color: var(--text-secondary); }
 
-    .profiles { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+    .profiles { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: stretch; }
+    .profiles .profile { display: flex; flex-direction: column; }
+    .profiles .profile-foot { margin-top: auto; padding-top: 22px; }
     @media (max-width: 960px) { .profiles { grid-template-columns: 1fr; } }
 
     .profile {
@@ -224,7 +226,7 @@
         <div class="p-list">${sessions.map(sessionItem).join('')}</div>
         ${workshops ? `<div class="p-label">Workshops</div><div class="p-list">${workshops}</div>` : ''}
         ${offers ? `<div class="p-label">Resources &amp; Coaching</div><div class="p-list">${offers}</div>` : ''}
-        <div class="profile-foot"><a class="btn btn-secondary" href="${esc(p.url)}" ${ext}>View ${esc(p.name.split(' ')[0])}'s Maven Profile &#8594;</a></div>
+        <div class="profile-foot"><a class="btn btn-tint btn-tint-blue" href="${esc(p.url)}" ${ext}>View ${esc(p.name.split(' ')[0])}'s Maven Profile &#8594;</a></div>
       </article>`;
     }
 

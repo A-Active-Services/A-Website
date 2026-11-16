@@ -524,3 +524,12 @@ footer {
 @media (max-width: 780px) { .learn-band { flex-direction: column; align-items: flex-start; padding: 28px 24px; } }
 
 .btn-sm { padding: 11px 20px; font-size: 0.85rem; }
+
+/* Tinted secondary CTAs: colored but lighter than the primary */
+.btn-tint { color: var(--white); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.btn-tint-red { background: rgba(255,59,59,0.16); border-color: rgba(255,59,59,0.55); }
+.btn-tint-red:hover { background: rgba(255,59,59,0.28); border-color: var(--accent-red); transform: translateY(-2px); box-shadow: 0 12px 28px -12px rgba(255,59,59,0.6); }
+.btn-tint-amber { background: rgba(245,166,35,0.16); border-color: rgba(245,166,35,0.55); }
+.btn-tint-amber:hover { background: rgba(245,166,35,0.28); border-color: var(--accent-amber); transform: translateY(-2px); box-shadow: 0 12px 28px -12px rgba(245,166,35,0.6); }
+.btn-tint-blue { background: rgba(46,124,255,0.16); border-color: rgba(46,124,255,0.55); }
+.btn-tint-blue:hover { background: rgba(46,124,255,0.28); border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 12px 28px -12px rgba(46,124,255,0.6); }

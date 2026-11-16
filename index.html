@@ -87,6 +87,16 @@
     }
     .growth-list li:last-child { border-bottom: none; }
     .growth-list li svg { flex-shrink: 0; width: 18px; height: 18px; color: var(--accent-amber); margin-top: 2px; }
+    /* BUILDERS: text left, cards right (mirrors healthcare) */
+    .builders-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px; align-items: center; }
+    .builders-layout .growth-secondary { margin-top: 0; max-width: none; }
+    .builders-layout .problem-grid-amber { grid-template-columns: 1fr; gap: 16px; margin-top: 0; }
+    .builders-layout .problem-item { display: grid; grid-template-columns: 46px 1fr; column-gap: 18px; padding: 22px 24px; background: rgba(255,255,255,0.04); border-color: var(--border-strong); }
+    .builders-layout .problem-item .icon-mark { grid-row: span 2; margin-bottom: 0; }
+    .builders-layout .problem-item h4 { margin-bottom: 4px; }
+    .builders-layout .problem-item p { font-size: 0.88rem; margin: 0; }
+    @media (max-width: 900px) { .builders-layout { grid-template-columns: 1fr; gap: 32px; } }
+    .builders-band .growth-cta-band { margin-top: 48px; }
     .btn-growth-amber {
       background: linear-gradient(120deg, var(--accent-amber), var(--accent-amber-deep));
       color: var(--white);
@@ -265,8 +275,8 @@
       <p class="lead">A+ Active Services helps healthcare teams and growing businesses save time, streamline operations, and improve every customer experience with AI that actually works. So people can focus on people.</p>
       <div class="hero-cta">
         <a href="https://calendar.app.google/gvcRg22BTp2oYZp79" target="_blank" rel="noopener" class="btn btn-primary">Book a Discovery Call</a>
-        <a href="case-studies.html" class="btn btn-secondary">See Our Case Studies</a>
-        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-secondary">Join The Community</a>
+        <a href="case-studies.html" class="btn btn-tint btn-tint-red">See Our Case Studies</a>
+        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-tint btn-tint-amber">Join The Community</a>
       </div>
     </div>
   </header>
@@ -422,6 +432,7 @@
       </video>
     </div>
     <div class="container">
+      <div class="builders-layout">
       <div class="growth-secondary reveal">
         <span class="eyebrow" style="color:var(--accent-amber);">Beyond Healthcare</span>
         <h3>Built for the builders too.</h3>
@@ -449,6 +460,7 @@
           <h4>Community Organizations</h4>
           <p>Teams that want to adopt AI responsibly, with real training and support, not just software.</p>
         </div>
+      </div>
       </div>
 
       <div class="growth-cta-band spotlight spot-amber reveal">
@@ -542,7 +554,7 @@
       <h2>Get direct access to our team.</h2>
       <div class="hero-cta" style="justify-content:center;margin-top:24px;">
         <a href="https://calendar.app.google/gvcRg22BTp2oYZp79" target="_blank" rel="noopener" class="btn btn-primary">Book a Discovery Call</a>
-        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-secondary">Join the Slack Community</a>
+        <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-tint btn-tint-amber">Join the Slack Community</a>
       </div>
     </div>
   </section>
