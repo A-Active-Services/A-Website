@@ -13,11 +13,10 @@
     logoUrl: "assets/logo-icon.png",
     slackUrl:
       "https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g",
-    promptClinicUrl: "https://thepromptclinic.com",
-    bookingUrl: "https://cal.com/a-activeservces",
+    learnUrl: "ai-for-everyday-people.html",
+    bookingUrl: "https://calendar.app.google/gvcRg22BTp2oYZp79",
     elevenLabsAgentId: "agent_7801kz4eq34qf84sdkqwkzyqr4nn",
     // TODO: replace with a dedicated Slack Incoming Webhook for Quinn email captures
-    // (kept separate from the Prompt Clinic repo's ops-alert webhook on purpose).
     slackWebhookUrl: "REPLACE_ME_SLACK_WEBHOOK_URL",
   };
 
@@ -275,8 +274,8 @@
         </div>
         <div class="g-quicklinks">
           <a href="${CONFIG.slackUrl}" target="_blank" rel="noopener">Join Slack</a>
-          <a href="${CONFIG.promptClinicUrl}" target="_blank" rel="noopener" class="g-link-accent">Prompt Clinic</a>
-          <a href="${CONFIG.bookingUrl}" target="_blank" rel="noopener">Book a Consult</a>
+          <a href="${CONFIG.learnUrl}" class="g-link-accent">Free Sessions</a>
+          <a href="${CONFIG.bookingUrl}" target="_blank" rel="noopener">Book a Call</a>
         </div>
         <p class="g-foot">Voice is never required, you can type instead. Nothing is recorded beyond this session. ${CONFIG.agentName} only knows about A+, not a general AI.</p>
       </div>

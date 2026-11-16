@@ -48,6 +48,7 @@
   </style>
 </head>
 <body>
+  <div class="grain" aria-hidden="true"></div>
 
   <nav class="nav">
     <div class="nav-inner">
@@ -55,11 +56,16 @@
         <img src="assets/logo-icon.png" alt="A+ Active Services logo">
         A+ Active Services
       </a>
-      <div class="nav-links">
+      <div class="nav-links" id="navLinks">
         <a href="index.html#healthcare">Healthcare</a>
         <a href="index.html#services">Services</a>
+        <a href="case-studies.html" class="active">Case Studies</a>
         <a href="index.html#story">Our Story</a>
-        <a href="ai-for-everyday-people.html">AI For Everyday People <span class="nav-soon">Coming Soon</span></a>
+        <a href="ai-for-everyday-people.html">AI For Everyday People</a>
+      </div>
+      <div class="nav-right">
+        <a href="https://calendar.app.google/gvcRg22BTp2oYZp79" target="_blank" rel="noopener" class="nav-book">Book a Call</a>
+        <button type="button" class="nav-menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
       </div>
     </div>
   </nav>
@@ -178,7 +184,7 @@
       <span class="eyebrow" style="justify-content:center;">Want Results Like These?</span>
       <h2>Let's talk about your business.</h2>
       <div class="hero-cta" style="justify-content:center;margin-top:24px;">
-        <a href="https://cal.com/a-activeservces" class="btn btn-primary">Book A Consult</a>
+        <a href="https://calendar.app.google/gvcRg22BTp2oYZp79" target="_blank" rel="noopener" class="btn btn-primary">Book a Discovery Call</a>
         <a href="https://join.slack.com/t/aplusactiveservices/shared_invite/zt-45duywuls-ENY0PVBiQBgYmh7tW69D7g" target="_blank" rel="noopener" class="btn btn-secondary">Join The Slack Community</a>
       </div>
     </div>
@@ -208,8 +214,8 @@
           </div>
           <div class="footer-col">
             <h4>Get Started</h4>
+            <a href="https://calendar.app.google/gvcRg22BTp2oYZp79" target="_blank" rel="noopener">Book a Discovery Call</a>
             <a href="ai-for-everyday-people.html">AI For Everyday People</a>
-            <a href="https://thepromptclinic.com">The Prompt Clinic</a>
             <a href="faq.html">FAQ</a>
           </div>
         </div>
@@ -273,5 +279,6 @@
       })
       .catch(() => {});
   </script>
+  <script src="js/site.js" defer></script>
 </body>
 </html>

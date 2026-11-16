@@ -1,0 +1,191 @@
+{
+  "profiles": [
+    {
+      "name": "Anthony Virgo",
+      "url": "https://maven.com/anthony-virgo",
+      "photo": "assets/anthony.png",
+      "role": "Founder & CEO, A+ Active Services",
+      "title": "Proud Dad | Reshaping Digital Healthcare | Building AI For Everyday People",
+      "blurb": "Makes AI simple for healthcare professionals, entrepreneurs, and everyday people. Former partnerships lead at Cityblock Health, onboarding providers from Mount Sinai, NYU, and NewYork Presbyterian.",
+      "sessionsTotal": 11,
+      "sessions": [
+        {
+          "title": "Practice Your Sales Pitch With AI",
+          "url": "https://maven.com/p/c9e5e7/practice-your-sales-pitch-with-ai",
+          "start": "2026-11-18T14:00:00Z",
+          "minutes": 45,
+          "signups": 27
+        },
+        {
+          "title": "Create Your First AI Video",
+          "url": "https://maven.com/p/f5d0a5/create-your-first-ai-video",
+          "start": "2026-11-10T14:00:00Z",
+          "minutes": 45,
+          "signups": 65
+        },
+        {
+          "title": "Make Claude Code Your Personal Assistant",
+          "url": "https://maven.com/p/4daff3/make-claude-code-your-personal-assistant",
+          "start": "2026-11-06T14:00:00Z",
+          "minutes": 45,
+          "signups": 142
+        },
+        {
+          "title": "Build Your First Voice AI Agent",
+          "url": "https://maven.com/p/196d7e/build-your-first-voice-ai-agent",
+          "start": "2026-11-04T14:00:00Z",
+          "minutes": 45,
+          "signups": 171
+        },
+        {
+          "title": "Sell AI Services With Confidence",
+          "url": "https://maven.com/p/a02843/sell-ai-services-with-confidence",
+          "start": "2026-10-30T13:00:00Z",
+          "minutes": 45,
+          "signups": 99
+        },
+        {
+          "title": "Turn Your AI Skills Into a Simple Offer",
+          "url": "https://maven.com/p/28633e/turn-your-ai-skills-into-a-simple-offer",
+          "start": "2026-10-18T12:45:00Z",
+          "minutes": 60,
+          "signups": 255
+        }
+      ],
+      "workshops": [
+        {
+          "title": "Vibecoding 101: Get Comfortable With ChatGPT",
+          "description": "A friendly start-to-finish guide to using ChatGPT",
+          "url": "https://maven.com/anthony-virgo/get-comfortable-with-chatgpt"
+        },
+        {
+          "title": "Vibecoding 102: Get Comfortable With Claude",
+          "description": "A friendly, hands-on guide to getting more from Claude",
+          "url": "https://maven.com/anthony-virgo/get-comfortable-with-claude"
+        }
+      ],
+      "offers": [
+        {
+          "title": "How to CHAT back to your AI Agents: Markdown Prompt Template Guide",
+          "description": "Easy 1 page for Markdown Format",
+          "price": 5.99,
+          "kind": "resource",
+          "cta": "Checkout",
+          "url": "https://maven.com/anthony-virgo/o/aa2078"
+        }
+      ]
+    },
+    {
+      "name": "Jai Bhagat",
+      "url": "https://maven.com/a-plus",
+      "photo": "assets/jai.jpg",
+      "role": "Director of AI Education & Community",
+      "title": "Developer Relations, PrismML",
+      "blurb": "Taught at Madison Square Garden and Parsons School of Design. Now shows business leaders what AI really costs and how to run it well.",
+      "sessionsTotal": 15,
+      "sessions": [
+        {
+          "title": "Pricing Inference Budgets for Leadership & Accounting",
+          "url": "https://maven.com/p/591399/pricing-inference-budgets-for-leadership-accounting",
+          "start": "2026-10-28T16:00:00Z",
+          "minutes": 30,
+          "signups": 93
+        },
+        {
+          "title": "Reduce Your AI Costs by 90% (ML Engineering Cheatcodes)",
+          "url": "https://maven.com/p/a0ffda/reduce-your-ai-costs-by-90-ml-engineering-cheatcodes",
+          "start": "2026-10-26T21:00:00Z",
+          "minutes": 30,
+          "signups": 110
+        },
+        {
+          "title": "Calculate Your Daily Claude Code Cost",
+          "url": "https://maven.com/p/0dbfce/calculate-your-daily-claude-code-cost",
+          "start": "2026-10-20T16:00:00Z",
+          "minutes": 45,
+          "signups": 112
+        },
+        {
+          "title": "Calculate the Cost of a Broken AI Agent",
+          "url": "https://maven.com/p/404381/calculate-the-cost-of-a-broken-ai-agent",
+          "start": "2026-10-16T17:00:00Z",
+          "minutes": 30,
+          "signups": 79
+        },
+        {
+          "title": "Build an AI Shopping Assistant That Uses Your Accounts",
+          "url": "https://maven.com/p/7d3752/build-an-ai-shopping-assistant-that-uses-your-accounts",
+          "start": "2026-09-30T16:00:00Z",
+          "minutes": 60,
+          "signups": 40
+        },
+        {
+          "title": "Finding Jev Alternatives (HuggingFace 101 Series)",
+          "url": "https://maven.com/p/cf59b0/finding-jev-alternatives-huggingface-101-series",
+          "start": "2026-09-23T23:30:00Z",
+          "minutes": 45,
+          "signups": 35
+        }
+      ],
+      "workshops": [],
+      "offers": [
+        {
+          "title": "Pair Programming:  You Drive, I Tell You What I'd Do as an AI Engineer",
+          "description": "One hour, your screen, your task. You keep the keyboard; I narrate what I'd do next and what it's costing you.",
+          "price": 250.0,
+          "kind": "service",
+          "cta": "Book a session",
+          "url": "https://maven.com/a-plus/o/246d5d"
+        },
+        {
+          "title": "Pick the Right AI Harness: Chat, API, Platform, or Self-Host",
+          "description": "The four ways to run AI, what each really costs, who sees your data, and the signs you've outgrown the one you're on.",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get free resource",
+          "url": "https://maven.com/a-plus/o/5a9391"
+        },
+        {
+          "title": "Price One AI Task in 15 Minutes: The Rent-or-Own Worksheet",
+          "description": "A one-page worksheet that prices one task you already do: the human cost, the cost at each AI rung, and which rung fits.",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get free resource",
+          "url": "https://maven.com/a-plus/o/dab29b"
+        },
+        {
+          "title": "The Agent Harness Cheat Sheet: What Actually Happens When AI Agents Run",
+          "description": "Get the free cheat sheet",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get free resource",
+          "url": "https://maven.com/a-plus/o/a51ea5"
+        },
+        {
+          "title": "The GTM Paradox: Why Copying the Winners Makes You Lose",
+          "description": "Get this free resource",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get free resource",
+          "url": "https://maven.com/a-plus/o/bf7e19"
+        },
+        {
+          "title": "Turn your team's files into gold",
+          "description": "Build your team’s digital twin with GPT-6 Astra + local AI. A visual guide, prompts and editable starter kit.",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get the free guide",
+          "url": "https://maven.com/a-plus/o/585d59"
+        },
+        {
+          "title": "Write a One-Page AI Cost Brief Your Leadership Will Actually Read",
+          "description": "A fill-in template for the brief that gets an AI line item approved: cost today, cost with AI, the tradeoff, and one ask",
+          "price": 0.0,
+          "kind": "resource",
+          "cta": "Get free resource",
+          "url": "https://maven.com/a-plus/o/c2cd9c"
+        }
+      ]
+    }
+  ]
+}
